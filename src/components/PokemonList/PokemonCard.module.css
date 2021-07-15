@@ -1,0 +1,52 @@
+.container {
+  background-color: white;
+  border-radius: 10px;
+  margin: 5px;
+  width: 300px;
+  padding: 5px;
+  padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.clickable_container {
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+h4 {
+  margin: 3px;
+  flex: 0 0 100%;
+  text-align: center;
+}
+h3 {
+  margin: 5;
+  flex: 0 0 100%;
+  text-align: center;
+}
+
+.add_button {
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: #00e64d;
+  border-radius: 5px;
+  width: 90%;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.delete_button {
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: #e64d00;
+  border-radius: 5px;
+  width: 90%;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}

@@ -33,7 +33,6 @@ const Home = () => {
   const [previousPage, setPreviousPage] = useState("");
 
   const [pokemons, setPokemons] = useRecoilState(pokemonAtoms);
-  console.log(pokemons);
 
   useEffect(() => {
     const setPokemonData = async () => {
@@ -60,11 +59,10 @@ const Home = () => {
           weight: data.weight,
           types: data.types,
           image: data.sprites.front_default,
+          price: data.base_experience + data.id * data.weight,
         };
         allNewPokemons.push(newPokemon);
       }
-      console.log(pokemons);
-      console.log(allNewPokemons);
       setPokemons([...pokemons, ...allNewPokemons]);
     };
     updatePokemons();

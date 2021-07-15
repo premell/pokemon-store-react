@@ -1,0 +1,10 @@
+.main_container {
+  margin: 5px;
+  display: inline-block;
+  border-radius: 10px;
+  width: 80px;
+  padding: 5px;
+  text-align: center;
+  color: white;
+  font-weight: 400;
+}
