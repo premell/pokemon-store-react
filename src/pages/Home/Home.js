@@ -59,7 +59,7 @@ const Home = () => {
           height: data.height,
           weight: data.weight,
           types: data.types,
-          images: data.sprites.front_default,
+          image: data.sprites.front_default,
         };
         allNewPokemons.push(newPokemon);
       }
