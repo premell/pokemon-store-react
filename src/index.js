@@ -6,6 +6,8 @@ import PokemonDetails from "./pages/PokemonDetails/PokemonDetails";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
+import { RecoilRoot } from "recoil";
+
 const Routing = () => {
   return (
     <Router>
@@ -20,7 +22,9 @@ const Routing = () => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Routing />
+    <RecoilRoot>
+      <Routing />
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
 );
