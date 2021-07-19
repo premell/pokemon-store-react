@@ -1,3 +1,4 @@
+import ALL_TYPES from "../../utils/ALL_TYPES";
 const getFlairColor = (type) => {
   let flairColor;
   switch (type) {

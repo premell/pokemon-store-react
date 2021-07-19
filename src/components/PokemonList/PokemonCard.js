@@ -15,20 +15,14 @@ const PokemonCard = ({ pokemon }) => {
       pokemon: [...cart.pokemon, pokemon],
       total: cart.total + price,
     };
-    console.log(newCart);
     setCart(newCart);
   };
 
   const deleteFromCart = () => {
-    console.log(cart);
     const newCartPokemon = cart.pokemon.filter(
       (cartPokemon) => cartPokemon.name !== name
     );
-    console.log(cart);
-    console.log(newCartPokemon);
     const newTotal = cart.total - price;
-    console.log(newTotal);
-    console.log({ newCartPokemon, newTotal });
     setCart({ pokemon: newCartPokemon, total: newTotal });
   };
 
