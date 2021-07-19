@@ -20,13 +20,21 @@ const PokemonCard = ({ pokemon }) => {
   };
 
   const deleteFromCart = () => {
+    console.log(cart);
     const newCartPokemon = cart.pokemon.filter(
       (cartPokemon) => cartPokemon.name !== name
     );
+    console.log(cart);
     console.log(newCartPokemon);
     const newTotal = cart.total - price;
-    setCart({ newCartPokemon, newTotal });
+    console.log(newTotal);
+    console.log({ newCartPokemon, newTotal });
+    setCart({ pokemon: newCartPokemon, total: newTotal });
   };
+
+  useEffect(() => {
+    // console.log(cart);
+  }, [cart]);
 
   return (
     <div className={PokemonCardCss.container}>
@@ -40,7 +48,7 @@ const PokemonCard = ({ pokemon }) => {
         </div>
       </div>
       <h3>{formatAsUSD(price)}</h3>
-      {cart?.pokemon.find((cartPokemon) => cartPokemon.name === name) ===
+      {cart.pokemon.find((cartPokemon) => cartPokemon.name === name) ===
       undefined ? (
         <div onClick={() => addToCart()} className={PokemonCardCss.add_button}>
           add to cart

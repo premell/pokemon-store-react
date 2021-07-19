@@ -50,3 +50,20 @@ h3 {
   font-weight: bold;
   color: white;
 }
+.add_button:hover {
+  background-color: #00b23b;
+}
+
+.delete_button:hover {
+  background-color: #b23b00;
+}
+
+img {
+  width: 150px;
+  height: 150px;
+  transition: transform 0.2s;
+}
+
+.clickable_container:hover img {
+  transform: scale(1.1, 1.1);
+}

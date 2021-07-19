@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { pokemons as pokemonAtoms } from "../../atoms";
+import { allPokemonNames as allPokemonNamesAtoms } from "../../atoms";
 import Navbar from "../../components/Navbar/Navbar";
 import PokemonList from "../../components/PokemonList/PokemonList";
 import SidePanelFilters from "../../components/SidePanelFilters/SidePanelFilters";
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const DEFAULT_QUERY = "pokemon?offset=0&limit=40";
+const ALL_POKEMON_URL = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=2000";
 
 const fetchPokemonData = async (url) => {
   const res = await fetch(url);
@@ -33,15 +35,24 @@ const Home = () => {
   const [previousPage, setPreviousPage] = useState("");
 
   const [pokemons, setPokemons] = useRecoilState(pokemonAtoms);
+  const [allPossiblePokemons, setAllPossiblePokemons] =
+    useRecoilState(allPokemonNamesAtoms);
 
   useEffect(() => {
-    const setPokemonData = async () => {
+    const setCurrentPokemonNames = async () => {
       const data = await fetchPokemonData(BASE_URL + DEFAULT_QUERY);
       setNextPage(data.next);
       const names = data.results.map((pokemon) => pokemon.name);
       setPokemonToShow(names);
     };
-    setPokemonData();
+    const setAllPokemonNames = async () => {
+      const data = await fetchPokemonData(ALL_POKEMON_URL);
+      setNextPage(data.next);
+      const names = data.results.map((pokemon) => pokemon.name);
+      setAllPossiblePokemons(names);
+    };
+    setCurrentPokemonNames();
+    setAllPokemonNames();
   }, []);
 
   useEffect(() => {
@@ -68,10 +79,12 @@ const Home = () => {
     updatePokemons();
   }, [pokemonToShow]);
 
+  const setFilters = (filters) => {};
+
   return (
     <main>
       <Navbar />
-      <SidePanelFilters />
+      <SidePanelFilters setFilters={setFilters} />
       <PokemonList pokemons={pokemons} />
     </main>
   );
