@@ -12,7 +12,6 @@ import ALL_TYPES from "../../utils/ALL_TYPES.js";
 import flattenObject from "../../utils/flattenObject";
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
-const DEFAULT_QUERY = "pokemon?offset=0&limit=40";
 const ALL_POKEMON_URL = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=2000";
 
 const fetchData = async (url) => {
@@ -25,6 +24,15 @@ const getAllPokemonNames = async () => {
   const data = await fetchData(`${BASE_URL}pokemon?offset=0&limit=2000`);
   const names = data.results.map((pokemon) => pokemon.name);
   return names;
+};
+
+const SORTING_METHODS = {
+  PRICE_LOWEST_FIRST: "PRICE_LOWEST_FIRST",
+  PRICE_HIGHEST_FIRST: "PRICE_HIGHEST_FIRST",
+  ALPHABETICALLY_A_FIRST: "ALPHABETICALLY_A_FIRST",
+  ALPHABETICALLY_Z_FIRST: "ALPHABETICALLY_Z_FIRST",
+  RELEASE_DATE_OLDEST_FIRST: "RELEASE_DATE_OLDEST_FIRST",
+  RELEASE_DATE_NEWEST_FIRST: "RELEASE_DATE_NEWEST_FIRST",
 };
 
 const characterValues = {
@@ -68,30 +76,15 @@ const pokemonExists = (pokemonName, allPokemons) => {
   return doesExist;
 };
 
-const getPokemonsFromNames = async (names) => {
-  const pokemons = [];
-  for (const pokemonName of names) {
-    const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
-    const newPokemon = {
-      name: pokemonName,
-      height: data2.height,
-      weight: data2.weight,
-      types: data2.types,
-      image: data2.sprites.front_default,
-      price: getPokemonPrice(pokemonName),
-    };
-    pokemons.push(newPokemon);
-  }
-  return pokemons;
-};
-
 const Home = () => {
-  const [currentPage, setCurrentPage] = useState(BASE_URL + DEFAULT_QUERY);
-  const [nextPage, setNextPage] = useState("");
-  const [previousPage, setPreviousPage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pokemonsPerPage, setPokemonsPerPage] = useState(40);
 
-  const [unFilteredPokemons, setUnfilteredPokemons] = useState([]);
-  const [filteredPokemons, setFilteredPokemons] = useState([]);
+  const [allFilteredPokemons, setAllFilteredPokemons] = useState([]);
+  const [allSortedPokemons, setAllSortedPokemons] = useState([]);
+  const [storedPokemons, setStoredPokemons] = useState([]);
+  const [storedPokemonNames, setStoredPokemonNames] = useState([]);
+  const [pokemonToDisplay, setPokemonsToDisplay] = useState([]);
 
   const [searchValue, setSearchValue] = useRecoilState(searchValueAtoms);
 
@@ -104,83 +97,150 @@ const Home = () => {
     max: "",
     isFiltering: false,
   });
+  const [sortingMethod, setSortingMethod] = useState(
+    SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
+  );
+  console.log(sortingMethod);
 
-  // console.log(ALL_TYPES);
+  const getPokemonsFromNames = async (names) => {
+    const pokemons = [];
+    for (const pokemonName of names) {
+      if (storedPokemonNames.includes(pokemonName)) {
+        const newPokemon = stored.Pokemons.find(
+          (pokemon) => pokemon.name === pokemonName
+        );
+      } else {
+        const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
+        const newPokemon = {
+          name: pokemonName,
+          height: data2.height,
+          weight: data2.weight,
+          types: data2.types,
+          image: data2.sprites.front_default,
+          price: getPokemonPrice(pokemonName),
+        };
+        storedPokemons.push(newPokemon);
+        storedPokemonNames.push(pokemonName);
+      }
+      pokemons.push(newPokemon);
+    }
+    return pokemons;
+  };
 
   useEffect(() => {
     const setInitialPokemons = async () => {
-      const data = await fetchData(BASE_URL + DEFAULT_QUERY);
-      setNextPage(data.next);
+      const data = await fetchData(
+        `${BASE_URL}pokemon?offset=0&limit=${pokemonsPerPage}`
+      );
       const names = data.results.map((pokemon) => pokemon.name);
-      const pokemons = await getPokemonsFromNames(names);
-      setUnfilteredPokemons(pokemons);
+      //const pokemons = await getPokemonsFromNames(names);
+      setAllFilteredPokemons(names);
     };
     setInitialPokemons();
   }, []);
 
   useEffect(() => {
-    if (
-      typesToFilter.isFiltering === false &&
-      pricesToFilter.isFiltering === false
-    ) {
-      setPokemonsToShow();
+    const sortedPokemon = [...allFilteredPokemons];
+
+    switch (sortingMethod) {
+      case SORTING_METHODS.ALPHABETICALLY_A_FIRST:
+        sortedPokemon.sort((a, b) => (a.name > b.name ? 1 : -1));
+        break;
+      case SORTING_METHODS.ALPHABETICALLY_Z_FIRST:
+        sortedPokemon.sort((a, b) => (a.name < b.name ? 1 : -1));
+        break;
+      case SORTING_METHODS.PRICE_HIGHEST_FIRST:
+        sortedPokemon.sort((a, b) => (a.price < b.price ? 1 : -1));
+        break;
+      case SORTING_METHODS.PRICE_LOWEST_FIRST:
+        sortedPokemon.sort((a, b) => (a.price > b.price ? 1 : -1));
+        break;
+      case SORTING_METHODS.RELEASE_DATE_NEWEST_FIRST:
+        sortedPokemon.sort((a, b) => (a.index < b.index ? 1 : -1));
+        break;
+      case SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST:
+        sortedPokemon.sort((a, b) => (a.index < b.index ? 1 : -1));
+        break;
+      default:
     }
-  }, []);
+    setPokemonsToDisplay(sortedPokemon);
+  }, [allFilteredPokemons, sortingMethod]);
+  // console.log(ALL_TYPES);
 
   //   useEffect(() => {
-  //     const updatePokemons = async () => {
-  //       const allNewPokemons = [];
-  //       for (const pokemonName of pokemonToShow) {
-  //         if (pokemonExists(pokemonName, pokemons)) return;
-  //
-  //         const data = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
-  //         const newPokemon = {
-  //           name: pokemonName,
-  //           height: data.height,
-  //           weight: data.weight,
-  //           types: data.types,
-  //           image: data.sprites.front_default,
-  //           price: data.base_experience + data.id * data.weight,
-  //         };
-  //         allNewPokemons.push(newPokemon);
-  //       }
-  //       setPokemons([...pokemons, ...allNewPokemons]);
+  //     const setInitialPokemons = async () => {
+  //       const data = await fetchData(BASE_URL + DEFAULT_QUERY);
+  //       setNextPage(data.next);
+  //       const names = data.results.map((pokemon) => pokemon.name);
+  //       const pokemons = await getPokemonsFromNames(names);
+  //       setUnfilteredPokemons(pokemons);
   //     };
-  //     updatePokemons();
-  //   }, [pokemonToShow]);
-
-  let isFirstRendering = true;
-  useEffect(() => {
-    if (isFirstRendering) {
-      isFirstRendering = false;
-      return;
-    }
-    if (
-      typesToFilter.isFiltering === false &&
-      pricesToFilter.isFiltering === false
-    ) {
-      initialPokemons;
-    }
-    const getPokemonsToShow = async () => {
-      let namesOfPokemonsToShow = await getAllPokemonNames();
-
-      for (const type of typesToFilter.types) {
-        const data = await fetchData(`${BASE_URL}type/${type}`);
-        const flattenedData = flattenObject(data.pokemon);
-        namesOfPokemonsToShow = namesOfPokemonsToShow.filter((name) =>
-          Object.values(flattenedData).includes(name)
-        );
-      }
-
-      const pokemons = await getPokemonsFromNames(namesOfPokemonsToShow);
-      setUnfilteredPokemons(pokemons);
-    };
-    getPokemonsToShow();
-  }, [typesToFilter, pricesToFilter, searchValue]);
-
-  useEffect(() => {
-    console.log(pokemons);
-  }, [pokemons]);
+  //     setInitialPokemons();
+  //   }, []);
+  //
+  //   useEffect(() => {
+  //     if (
+  //       typesToFilter.isFiltering === false &&
+  //       pricesToFilter.isFiltering === false
+  //     ) {
+  //       setPokemonsToShow();
+  //     }
+  //   }, []);
+  //
+  //   //   useEffect(() => {
+  //   //     const updatePokemons = async () => {
+  //   //       const allNewPokemons = [];
+  //   //       for (const pokemonName of pokemonToShow) {
+  //   //         if (pokemonExists(pokemonName, pokemons)) return;
+  //   //
+  //   //         const data = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
+  //   //         const newPokemon = {
+  //   //           name: pokemonName,
+  //   //           height: data.height,
+  //   //           weight: data.weight,
+  //   //           types: data.types,
+  //   //           image: data.sprites.front_default,
+  //   //           price: data.base_experience + data.id * data.weight,
+  //   //         };
+  //   //         allNewPokemons.push(newPokemon);
+  //   //       }
+  //   //       setPokemons([...pokemons, ...allNewPokemons]);
+  //   //     };
+  //   //     updatePokemons();
+  //   //   }, [pokemonToShow]);
+  //
+  //   let isFirstRendering = true;
+  //   useEffect(() => {
+  //     if (isFirstRendering) {
+  //       isFirstRendering = false;
+  //       return;
+  //     }
+  //     if (
+  //       typesToFilter.isFiltering === false &&
+  //       pricesToFilter.isFiltering === false
+  //     ) {
+  //       initialPokemons;
+  //     }
+  //     const getPokemonsToShow = async () => {
+  //       let namesOfPokemonsToShow = await getAllPokemonNames();
+  //
+  //       for (const type of typesToFilter.types) {
+  //         const data = await fetchData(`${BASE_URL}type/${type}`);
+  //         const flattenedData = flattenObject(data.pokemon);
+  //         namesOfPokemonsToShow = namesOfPokemonsToShow.filter((name) =>
+  //           Object.values(flattenedData).includes(name)
+  //         );
+  //       }
+  //
+  //       const pokemons = await getPokemonsFromNames(namesOfPokemonsToShow);
+  //       setUnfilteredPokemons(pokemons);
+  //     };
+  //     getPokemonsToShow();
+  //   }, [typesToFilter, pricesToFilter, searchValue]);
+  //
+  //   useEffect(() => {
+  //     console.log(pokemons);
+  //   }, [pokemons]);
 
   return (
     <main>
