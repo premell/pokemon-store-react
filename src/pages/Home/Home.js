@@ -14,18 +14,6 @@ import flattenObject from "../../utils/flattenObject";
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const ALL_POKEMON_URL = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=2000";
 
-const fetchData = async (url) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
-};
-
-const getAllPokemonNames = async () => {
-  const data = await fetchData(`${BASE_URL}pokemon?offset=0&limit=2000`);
-  const names = data.results.map((pokemon) => pokemon.name);
-  return names;
-};
-
 const SORTING_METHODS = {
   PRICE_LOWEST_FIRST: "PRICE_LOWEST_FIRST",
   PRICE_HIGHEST_FIRST: "PRICE_HIGHEST_FIRST",
@@ -64,6 +52,11 @@ const characterValues = {
   z: "26",
 };
 
+const getIndexFromUrl = (url) => {
+  const index = url.replace(/.*?(\d+)\/$/, "$1");
+  return parseInt(index);
+};
+
 const getPokemonPrice = (name) => {
   return name.length * 5 * characterValues[name[3]];
 };
@@ -88,6 +81,9 @@ const Home = () => {
 
   const [searchValue, setSearchValue] = useRecoilState(searchValueAtoms);
 
+  const [didLoad, setDidLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [typesToFilter, setTypesToFilter] = useState({
     types: [],
     isFiltering: false,
@@ -100,15 +96,28 @@ const Home = () => {
   const [sortingMethod, setSortingMethod] = useState(
     SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
   );
-  console.log(sortingMethod);
+  const fetchData = async (url) => {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  };
 
-  const getPokemonsFromNames = async (names) => {
+  const getAllPokemonNames = async () => {
+    const data = await fetchData(`${BASE_URL}pokemon?offset=0&limit=2000`);
+    const names = data.results.map((pokemon) => pokemon.name);
+    return names;
+  };
+
+  const getPokemonObjects = async (refrencePokemons) => {
+    console.log(refrencePokemons);
     const pokemons = [];
-    for (const pokemonName of names) {
+    for (const pokemon of refrencePokemons) {
+      const pokemonName = pokemon.name;
       if (storedPokemonNames.includes(pokemonName)) {
-        const newPokemon = stored.Pokemons.find(
+        const newPokemon = storedPokemons.find(
           (pokemon) => pokemon.name === pokemonName
         );
+        pokemons.push(newPokemon);
       } else {
         const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
         const newPokemon = {
@@ -121,25 +130,32 @@ const Home = () => {
         };
         storedPokemons.push(newPokemon);
         storedPokemonNames.push(pokemonName);
+        pokemons.push(newPokemon);
       }
-      pokemons.push(newPokemon);
     }
     return pokemons;
   };
 
   useEffect(() => {
     const setInitialPokemons = async () => {
+      setIsLoading(true);
       const data = await fetchData(
         `${BASE_URL}pokemon?offset=0&limit=${pokemonsPerPage}`
       );
-      const names = data.results.map((pokemon) => pokemon.name);
-      //const pokemons = await getPokemonsFromNames(names);
-      setAllFilteredPokemons(names);
+      const pokemons = data.results.map((pokemon) => {
+        return (pokemon = {
+          name: pokemon.name,
+          price: getPokemonPrice(pokemon.name),
+          index: getIndexFromUrl(pokemon.url),
+        });
+      });
+      setAllFilteredPokemons(pokemons);
     };
     setInitialPokemons();
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     const sortedPokemon = [...allFilteredPokemons];
 
     switch (sortingMethod) {
@@ -159,98 +175,41 @@ const Home = () => {
         sortedPokemon.sort((a, b) => (a.index < b.index ? 1 : -1));
         break;
       case SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST:
-        sortedPokemon.sort((a, b) => (a.index < b.index ? 1 : -1));
+        sortedPokemon.sort((a, b) => (a.index > b.index ? 1 : -1));
         break;
       default:
     }
-    setPokemonsToDisplay(sortedPokemon);
+    setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
-  // console.log(ALL_TYPES);
 
-  //   useEffect(() => {
-  //     const setInitialPokemons = async () => {
-  //       const data = await fetchData(BASE_URL + DEFAULT_QUERY);
-  //       setNextPage(data.next);
-  //       const names = data.results.map((pokemon) => pokemon.name);
-  //       const pokemons = await getPokemonsFromNames(names);
-  //       setUnfilteredPokemons(pokemons);
-  //     };
-  //     setInitialPokemons();
-  //   }, []);
-  //
-  //   useEffect(() => {
-  //     if (
-  //       typesToFilter.isFiltering === false &&
-  //       pricesToFilter.isFiltering === false
-  //     ) {
-  //       setPokemonsToShow();
-  //     }
-  //   }, []);
-  //
-  //   //   useEffect(() => {
-  //   //     const updatePokemons = async () => {
-  //   //       const allNewPokemons = [];
-  //   //       for (const pokemonName of pokemonToShow) {
-  //   //         if (pokemonExists(pokemonName, pokemons)) return;
-  //   //
-  //   //         const data = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
-  //   //         const newPokemon = {
-  //   //           name: pokemonName,
-  //   //           height: data.height,
-  //   //           weight: data.weight,
-  //   //           types: data.types,
-  //   //           image: data.sprites.front_default,
-  //   //           price: data.base_experience + data.id * data.weight,
-  //   //         };
-  //   //         allNewPokemons.push(newPokemon);
-  //   //       }
-  //   //       setPokemons([...pokemons, ...allNewPokemons]);
-  //   //     };
-  //   //     updatePokemons();
-  //   //   }, [pokemonToShow]);
-  //
-  //   let isFirstRendering = true;
-  //   useEffect(() => {
-  //     if (isFirstRendering) {
-  //       isFirstRendering = false;
-  //       return;
-  //     }
-  //     if (
-  //       typesToFilter.isFiltering === false &&
-  //       pricesToFilter.isFiltering === false
-  //     ) {
-  //       initialPokemons;
-  //     }
-  //     const getPokemonsToShow = async () => {
-  //       let namesOfPokemonsToShow = await getAllPokemonNames();
-  //
-  //       for (const type of typesToFilter.types) {
-  //         const data = await fetchData(`${BASE_URL}type/${type}`);
-  //         const flattenedData = flattenObject(data.pokemon);
-  //         namesOfPokemonsToShow = namesOfPokemonsToShow.filter((name) =>
-  //           Object.values(flattenedData).includes(name)
-  //         );
-  //       }
-  //
-  //       const pokemons = await getPokemonsFromNames(namesOfPokemonsToShow);
-  //       setUnfilteredPokemons(pokemons);
-  //     };
-  //     getPokemonsToShow();
-  //   }, [typesToFilter, pricesToFilter, searchValue]);
-  //
-  //   useEffect(() => {
-  //     console.log(pokemons);
-  //   }, [pokemons]);
+  useEffect(() => {
+    const displayPokemon = async () => {
+      const startPokemon = (currentPage - 1) * pokemonsPerPage;
+      const endPokemon = currentPage * pokemonsPerPage;
+      const pokemonToDisplay = allSortedPokemons.slice(
+        startPokemon,
+        endPokemon
+      );
 
+      const pokemons = await getPokemonObjects(pokemonToDisplay);
+      setPokemonsToDisplay(pokemons);
+      setIsLoading(false);
+    };
+    displayPokemon();
+  }, [allSortedPokemons]);
+
+  useEffect(() => {
+    console.log(allSortedPokemons);
+  }, [allSortedPokemons]);
   return (
     <main>
       <p>{searchValue}</p>
       <Navbar />
+      <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
       {/* <SidePanelFilters */}
       {/*   setPricesToFilter={setPricesToFilter} */}
       {/*   setTypeFilters={setTypeFilters} */}
-      {/* /> */}
-      {/* <PokemonList pokemons={pokemons} /> */}
+      {/* /> */} {/* <PokemonList pokemons={pokemons} /> */}{" "}
     </main>
   );
 };
