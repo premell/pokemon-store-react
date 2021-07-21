@@ -84,14 +84,10 @@ const Home = () => {
   const [didLoad, setDidLoad] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [typesToFilter, setTypesToFilter] = useState({
-    types: [],
-    isFiltering: false,
-  });
+  const [typesToFilter, setTypesToFilter] = useState([]);
   const [pricesToFilter, setPricesToFilter] = useState({
     min: "",
     max: "",
-    isFiltering: false,
   });
   const [sortingMethod, setSortingMethod] = useState(
     SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
@@ -102,23 +98,24 @@ const Home = () => {
     return data;
   };
 
-  const getAllPokemonNames = async () => {
+  const getAllPokemons = async () => {
     const data = await fetchData(`${BASE_URL}pokemon?offset=0&limit=2000`);
-    const names = data.results.map((pokemon) => pokemon.name);
-    return names;
+    const pokemon = data.results;
+    return pokemon;
   };
 
   const getPokemonObjects = async (refrencePokemons) => {
-    console.log(refrencePokemons);
     const pokemons = [];
     for (const pokemon of refrencePokemons) {
       const pokemonName = pokemon.name;
+      // console.log(pokemon);
       if (storedPokemonNames.includes(pokemonName)) {
         const newPokemon = storedPokemons.find(
           (pokemon) => pokemon.name === pokemonName
         );
         pokemons.push(newPokemon);
       } else {
+        // console.log(pokemonName);
         const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
         const newPokemon = {
           name: pokemonName,
@@ -136,6 +133,7 @@ const Home = () => {
     return pokemons;
   };
 
+  //load initial pokemon
   useEffect(() => {
     const setInitialPokemons = async () => {
       setIsLoading(true);
@@ -154,6 +152,33 @@ const Home = () => {
     setInitialPokemons();
   }, []);
 
+  //filter pokemon
+  useEffect(() => {
+    const filterPokemon = async () => {
+      let filteredPokemons = await getAllPokemons();
+
+      for (const type of typesToFilter) {
+        console.log(type);
+        const data = await fetchData(`${BASE_URL}type/${type}`);
+        const pokemonOfType = data.pokemon;
+
+        const allPokemonOfType = Object.values(flattenObject(data.pokemon));
+
+        filteredPokemons = filteredPokemons.filter((pokemon) =>
+          allPokemonOfType.includes(pokemon.name)
+        );
+      }
+      console.log(filteredPokemons);
+      filteredPokemons = filteredPokemons.map((pokemon) => ({
+        ...pokemon,
+        price: getPokemonPrice(pokemon.name),
+      }));
+      setAllFilteredPokemons(filteredPokemons);
+    };
+    filterPokemon();
+  }, [typesToFilter, pricesToFilter, searchValue]);
+
+  //sort pokemon
   useEffect(() => {
     setIsLoading(true);
     const sortedPokemon = [...allFilteredPokemons];
@@ -182,6 +207,7 @@ const Home = () => {
     setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
 
+  //display pokemon
   useEffect(() => {
     const displayPokemon = async () => {
       const startPokemon = (currentPage - 1) * pokemonsPerPage;
@@ -191,19 +217,21 @@ const Home = () => {
         endPokemon
       );
 
+      console.log(pokemonToDisplay);
       const pokemons = await getPokemonObjects(pokemonToDisplay);
       setPokemonsToDisplay(pokemons);
       setIsLoading(false);
     };
     displayPokemon();
   }, [allSortedPokemons]);
+  const addType = () => {
+    setTypesToFilter([...typesToFilter, "water"]);
+  };
 
-  useEffect(() => {
-    console.log(allSortedPokemons);
-  }, [allSortedPokemons]);
   return (
     <main>
       <p>{searchValue}</p>
+      <div onClick={addType}>CLICK</div>
       <Navbar />
       <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
       {/* <SidePanelFilters */}
