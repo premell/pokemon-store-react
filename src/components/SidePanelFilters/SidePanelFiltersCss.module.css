@@ -1,0 +1,5 @@
+.main_container {
+  height: 100%;
+  width: 500px;
+  flex-grow: 1;
+}
