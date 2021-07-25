@@ -3,8 +3,19 @@ import PokemonCard from "./PokemonCard";
 import PokemonListCss from "./PokemonList.module.css";
 
 const PokemonList = ({ pokemons, isLoading }) => {
+  //console.log(pokemons);
   if (isLoading) {
-    return <p>IS LOADING</p>;
+    return (
+      <div className={PokemonListCss.main_container}>
+        <p className>IS LOADING</p>
+      </div>
+    );
+  } else if (pokemons.length === 0) {
+    return (
+      <div className={PokemonListCss.main_container}>
+        <p className>No Pokemon were found</p>
+      </div>
+    );
   } else {
     return (
       <div className={PokemonListCss.main_container}>

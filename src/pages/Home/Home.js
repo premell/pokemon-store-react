@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRecoilState } from "recoil";
 
 import { pokemons as pokemonAtoms } from "../../atoms";
@@ -8,10 +8,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import PokemonList from "../../components/PokemonList/PokemonList";
 import SidePanelFilters from "../../components/SidePanelFilters/SidePanelFilters";
 import ALL_TYPES from "../../utils/ALL_TYPES.js";
+import flattenObject from "../../utils/flattenObject";
 
 import HomeCss from "./Home.module.css";
-
-import flattenObject from "../../utils/flattenObject";
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const ALL_POKEMON_URL = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=2000";
@@ -71,6 +70,18 @@ const pokemonExists = (pokemonName, allPokemons) => {
   return doesExist;
 };
 
+const fetchData = async (url) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  return data;
+};
+
+const getAllPokemons = async () => {
+  const data = await fetchData(`${BASE_URL}pokemon?offset=0&limit=2000`);
+  const pokemon = data.results;
+  return pokemon;
+};
+
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pokemonsPerPage, setPokemonsPerPage] = useState(40);
@@ -78,15 +89,13 @@ const Home = () => {
   const [typeFilteredPokemon, setTypeFilteredPokemon] = useState([]);
   const [allFilteredPokemons, setAllFilteredPokemons] = useState([]);
   const [allSortedPokemons, setAllSortedPokemons] = useState([]);
+  const [pokemonToDisplay, setPokemonsToDisplay] = useState([]);
 
   const [storedPokemons, setStoredPokemons] = useState([]);
   const [storedPokemonNames, setStoredPokemonNames] = useState([]);
 
-  const [pokemonToDisplay, setPokemonsToDisplay] = useState([]);
-
   const [searchValue, setSearchValue] = useRecoilState(searchValueAtoms);
 
-  const [didLoad, setDidLoad] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const [typesToFilter, setTypesToFilter] = useState([]);
@@ -95,72 +104,41 @@ const Home = () => {
     max: 2500,
   });
   const [sortingMethod, setSortingMethod] = useState(
-    SORTING_METHODS.PRICE_HIGHEST_FIRST
+    SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
   );
-  const fetchData = async (url) => {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
-  };
 
-  const getAllPokemons = async () => {
-    const data = await fetchData(`${BASE_URL}pokemon?offset=0&limit=2000`);
-    const pokemon = data.results;
-    return pokemon;
-  };
-
-  const getPokemonObjects = async (refrencePokemons) => {
-    const pokemons = [];
-    for (const pokemon of refrencePokemons) {
-      const pokemonName = pokemon.name;
-      if (storedPokemonNames.includes(pokemonName)) {
-        const newPokemon = storedPokemons.find(
-          (pokemon) => pokemon.name === pokemonName
-        );
-        pokemons.push(newPokemon);
-      } else {
-        const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
-        const newPokemon = {
-          name: pokemonName,
-          types: data2.types,
-          image: data2.sprites.front_default,
-          price: pokemon.price,
-        };
-        storedPokemons.push(newPokemon);
-        storedPokemonNames.push(pokemonName);
-        pokemons.push(newPokemon);
+  const getPokemonObjects = useCallback(
+    async (refrencePokemons) => {
+      const pokemons = [];
+      for (const pokemon of refrencePokemons) {
+        const pokemonName = pokemon.name;
+        if (storedPokemonNames.includes(pokemonName)) {
+          const newPokemon = storedPokemons.find(
+            (pokemon) => pokemon.name === pokemonName
+          );
+          pokemons.push(newPokemon);
+        } else {
+          const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
+          const newPokemon = {
+            name: pokemonName,
+            types: data2.types,
+            image: data2.sprites.front_default,
+            price: pokemon.price,
+          };
+          storedPokemons.push(newPokemon);
+          storedPokemonNames.push(pokemonName);
+          pokemons.push(newPokemon);
+        }
       }
-    }
-    return pokemons;
-  };
-
-  // load initial pokemon
-  // useEffect(() => {
-  //   const setInitialPokemons = async () => {
-  //     setIsLoading(true);
-  //     const data = await fetchData(
-  //         `${BASE_URL}pokemon?offset=0&limit=${pokemonsPerPage}`);
-  //     const pokemons = data.results.map((pokemon) => {
-  //       return (pokemon = {
-  //         name : pokemon.name,
-  //         price : getPokemonPrice(pokemon.name),
-  //         index : getIndexFromUrl(pokemon.url),
-  //       });
-  //     });
-  //     setAllFilteredPokemons(pokemons);
-  //   };
-  //   setInitialPokemons();
-  // }, []);
-
-  // filter pokemon
-  // filter based on type
+      return pokemons;
+    },
+    [storedPokemonNames, storedPokemons]
+  );
 
   useEffect(() => {
     const filterPokemonBasedOnType = async () => {
-      const start = Date.now();
+      setIsLoading(true);
       let typeFilteredPokemon = await getAllPokemons();
-      const millis = Date.now() - start;
-      console.log(millis);
 
       for (const type of typesToFilter) {
         const data = await fetchData(`${BASE_URL}type/${type}`);
@@ -184,35 +162,23 @@ const Home = () => {
   }, [typesToFilter]);
 
   useEffect(() => {
-    let filteredPokemons = typeFilteredPokemon;
+    console.log(pricesToFilter);
+    const filteredPokemons = [...typeFilteredPokemon];
 
-    filteredPokemons = filteredPokemons.filter(
+    const filteredPokemonsByMinPrice = filteredPokemons.filter(
       (pokemon) => pokemon.price >= pricesToFilter.min
     );
-    filteredPokemons = filteredPokemons.filter(
+    const filteredPokemonsByMaxPrice = filteredPokemonsByMinPrice.filter(
       (pokemon) => pokemon.price <= pricesToFilter.max
     );
-    filteredPokemons = filteredPokemons.filter((pokemon) =>
-      pokemon.name.includes(searchValue)
+    const filteredPokemonsBySearchQuery = filteredPokemonsByMaxPrice.filter(
+      (pokemon) => pokemon.name.includes(searchValue)
     );
 
-    setAllFilteredPokemons(filteredPokemons);
+    setAllFilteredPokemons(filteredPokemonsBySearchQuery);
   }, [typeFilteredPokemon, pricesToFilter, searchValue]);
 
-  // filter based on search query
-
-  // add pokemon pricing
-  // useEffect(() => {
-  //   const pokemonWithPrice = allFilteredPokemons.map((pokemon) => ({
-  //     ...pokemon,
-  //     price: getPokemonPrice(pokemon.name),
-  //   }));
-  //   setAllFilteredPokemonsWithPrice(pokemonWithPrice);
-  // }, [allFilteredPokemons]);
-
-  // sort pokemon
   useEffect(() => {
-    setIsLoading(true);
     const sortedPokemon = [...allFilteredPokemons];
 
     switch (sortingMethod) {
@@ -244,7 +210,7 @@ const Home = () => {
     const displayPokemon = async () => {
       const startPokemon = (currentPage - 1) * pokemonsPerPage;
       const endPokemon = currentPage * pokemonsPerPage;
-      const pokemonToDisplay = allSortedPokemons.slice(
+      const pokemonToDisplay = [...allSortedPokemons].slice(
         startPokemon,
         endPokemon
       );
@@ -256,7 +222,7 @@ const Home = () => {
   }, [allSortedPokemons]);
 
   const addType = () => {
-    setTypesToFilter([...typesToFilter, "water"]);
+    setTypesToFilter((typesToFilter) => [...typesToFilter, "water"]);
   };
 
   return (

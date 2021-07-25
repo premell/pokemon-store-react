@@ -17,7 +17,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
 
   // Convert to percentage
   const getPercent = useCallback(
-    (value: number) => Math.round(((value - min) / (max - min)) * 100),
+    (value) => Math.round(((value - min) / (max - min)) * 100),
     [min, max]
   );
 
@@ -45,7 +45,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
   // Get min and max values when their state changes
   useEffect(() => {
     onChange({ min: minVal, max: maxVal });
-  }, [minVal, maxVal, onChange]);
+  }, [minVal, maxVal]);
 
   const stringToInteger = (string) => {
     const removeLetters = string.replace(/[^0-9]/g, "");
@@ -54,21 +54,27 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
   };
 
   const handleMinChange = (e) => {
-    const number = stringToInteger(e.target.value);
-    const constrainedNumber =
-      number <= minValRef.current ? minValRef.current : number;
-    setMinVal(constrainedNumber);
+    if (e.target.value === "") {
+      setMinVal(0);
+    } else {
+      const number = stringToInteger(e.target.value);
+      const lowerBoundNumber = number <= min ? min : number;
+      const upperBoundNumber =
+        lowerBoundNumber >= maxVal ? maxVal - 1 : lowerBoundNumber;
+      setMinVal(parseInt(upperBoundNumber));
+    }
   };
   const handleMaxChange = (e) => {
-    const number = stringToInteger(e.target.value);
-    const constrainedNumber =
-      number >= maxValRef.current ? maxValRef.current : number;
-    setMinVal(constrainedNumber);
+    if (e.target.value === "") {
+      setMaxVal(0);
+    } else {
+      const number = stringToInteger(e.target.value);
+      const upperBoundNumber = number >= max ? max : number;
+      const lowerBoundNumber =
+        upperBoundNumber <= minVal ? minVal + 1 : upperBoundNumber;
+      setMaxVal(parseInt(lowerBoundNumber));
+    }
   };
-
-  useEffect(() => {
-    console.log("RERENDERED");
-  });
 
   return (
     <div>
@@ -101,8 +107,6 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
         <div className={MultiRangeSliderCss.slider}>
           <div className={MultiRangeSliderCss.slider_track}></div>
           <div ref={range} className={MultiRangeSliderCss.slider_range}></div>
-          <div className={MultiRangeSliderCss.slider_left_value}>{minVal}</div>
-          <div className={MultiRangeSliderCss.slider_right_value}>{maxVal}</div>
         </div>
       </div>
       <input onChange={handleMinChange} value={minVal} />
