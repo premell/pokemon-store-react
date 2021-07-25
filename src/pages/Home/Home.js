@@ -104,7 +104,7 @@ const Home = () => {
     max: 2500,
   });
   const [sortingMethod, setSortingMethod] = useState(
-    SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
+    SORTING_METHODS.PRICE_LOWEST_FIRST
   );
 
   const getPokemonObjects = useCallback(
@@ -157,6 +157,7 @@ const Home = () => {
         };
       });
       setTypeFilteredPokemon(typeFilteredPokemon);
+      setIsLoading(false);
     };
     filterPokemonBasedOnType();
   }, [typesToFilter]);
@@ -216,7 +217,6 @@ const Home = () => {
       );
       const pokemons = await getPokemonObjects(pokemonToDisplay);
       setPokemonsToDisplay(pokemons);
-      setIsLoading(false);
     };
     displayPokemon();
   }, [allSortedPokemons]);

@@ -14,6 +14,8 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
   const minValRef = useRef(min);
   const maxValRef = useRef(max);
   const range = useRef(null);
+  const left_input = useRef(null);
+  const right_input = useRef(null);
 
   // Convert to percentage
   const getPercent = useCallback(
@@ -76,11 +78,15 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
     }
   };
 
+  useEffect;
+
+  console.log(range);
   return (
     <div>
       <div className={MultiRangeSliderCss.container}>
         <input
           type="range"
+          ref={left_input}
           min={min}
           max={max}
           value={minVal}
@@ -93,6 +99,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
         />
         <input
           type="range"
+          ref={right_input}
           min={min}
           max={max}
           value={maxVal}
