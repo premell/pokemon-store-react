@@ -12,6 +12,7 @@ const SidePanelFilters = ({ setPricesToFilter, setTypesToFilter }) => {
         max={2500}
         //onChange={({ min, max }) => setPriceFilters({ min, max })}
         onChange={({ min, max }) => {
+          console.log("HELLO", min, max);
           setPricesToFilter({ min, max });
         }}
       />

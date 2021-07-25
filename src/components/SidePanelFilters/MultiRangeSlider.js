@@ -45,9 +45,6 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
   }, [maxVal, getPercent]);
 
   // Get min and max values when their state changes
-  useEffect(() => {
-    onChange({ min: minVal, max: maxVal });
-  }, [minVal, maxVal]);
 
   const stringToInteger = (string) => {
     const removeLetters = string.replace(/[^0-9]/g, "");
@@ -78,9 +75,19 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
     }
   };
 
-  useEffect;
+  useEffect(() => {
+    const handleChange = () => {
+      onChange({ min: minVal, max: maxVal });
+    };
+    left_input.current.addEventListener("mouseup", handleChange);
+    right_input.current.addEventListener("mouseup", handleChange);
 
-  console.log(range);
+    return () => {
+      left_input.current.removeEventListener("mouseup", handleChange);
+      right_input.current.removeEventListener("mouseup", handleChange);
+    };
+  }, [minVal, maxVal]);
+
   return (
     <div>
       <div className={MultiRangeSliderCss.container}>
