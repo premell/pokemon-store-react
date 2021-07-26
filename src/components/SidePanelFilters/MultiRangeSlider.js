@@ -74,19 +74,10 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
       setMaxVal(parseInt(lowerBoundNumber));
     }
   };
-
-  useEffect(() => {
-    const handleChange = () => {
-      onChange({ min: minVal, max: maxVal });
-    };
-    left_input.current.addEventListener("mouseup", handleChange);
-    right_input.current.addEventListener("mouseup", handleChange);
-
-    return () => {
-      left_input.current.removeEventListener("mouseup", handleChange);
-      right_input.current.removeEventListener("mouseup", handleChange);
-    };
-  }, [minVal, maxVal]);
+  const handleMouseUp = (minVal, maxVal) => {
+    console.log(minVal, maxVal);
+    onChange({ min: minVal, max: maxVal });
+  };
 
   return (
     <div>
@@ -97,6 +88,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
           min={min}
           max={max}
           value={minVal}
+          onMouseUp={() => handleMouseUp(minVal, maxVal)}
           onChange={(event) => {
             const value = Math.min(Number(event.target.value), maxVal - 1);
             setMinVal(value);
@@ -110,6 +102,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
           min={min}
           max={max}
           value={maxVal}
+          onMouseUp={() => handleMouseUp(minVal, maxVal)}
           onChange={(event) => {
             const value = Math.max(Number(event.target.value), minVal + 1);
             setMaxVal(value);
