@@ -2,6 +2,7 @@ import { useState, useRef, memo } from "react";
 
 import SidePanelFiltersCss from "./SidePanelFiltersCss.module.css";
 import MultiRangeSlider from "./MultiRangeSlider";
+import TypeFilterList from "./TypeFilterList";
 
 const SidePanelFilters = ({ setPricesToFilter, setTypesToFilter }) => {
   const [typeFilters, setTypeFilters] = useState([""]);
@@ -12,10 +13,10 @@ const SidePanelFilters = ({ setPricesToFilter, setTypesToFilter }) => {
         max={2500}
         //onChange={({ min, max }) => setPriceFilters({ min, max })}
         onChange={({ min, max }) => {
-          console.log("HELLO", min, max);
           setPricesToFilter({ min, max });
         }}
       />
+      <TypeFilterList />
     </div>
   );
 };
