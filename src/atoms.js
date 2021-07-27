@@ -8,3 +8,12 @@ export const pokemons = atom({ key: "pokemons", default: [] });
 export const cart = atom({ key: "cart", default: { pokemon: [], total: 0 } });
 
 export const searchValue = atom({ key: "searchValue", default: "" });
+
+export const popupMessage = atom({
+  key: "popupMessage",
+  default: {
+    show: true,
+    message: "hello",
+    type: "positive",
+  },
+});

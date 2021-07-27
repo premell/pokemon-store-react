@@ -11,6 +11,8 @@ import ALL_TYPES from "../../utils/ALL_TYPES.js";
 import flattenObject from "../../utils/flattenObject";
 
 import HomeCss from "./Home.module.css";
+import { popupMessage as popupMessageAtoms } from "../../atoms";
+import PopupMessage from "../../shared/PopupMessage/PopupMessage";
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const ALL_POKEMON_URL = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=2000";
@@ -106,6 +108,9 @@ const Home = () => {
   const [sortingMethod, setSortingMethod] = useState(
     SORTING_METHODS.PRICE_LOWEST_FIRST
   );
+
+  const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+  console.log(popupMessage);
 
   useEffect(() => {
     console.log(storedPokemonNames);
@@ -266,6 +271,9 @@ const Home = () => {
 
   return (
     <main>
+      {popupMessage.show && (
+        <PopupMessage message={popupMessage.message} type={popupMessage.type} />
+      )}
       <p>{searchValue}</p>
       <div onClick={() => addType()}>CLICK</div>
       <Navbar />

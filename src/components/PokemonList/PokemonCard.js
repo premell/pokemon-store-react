@@ -7,9 +7,14 @@ import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
 import PokemonCardCss from "./PokemonCard.module.css";
 
+import { popupMessage as popupMessageAtoms } from "../../atoms";
+
 const PokemonCard = ({ pokemon }) => {
   const { name, image, price, types } = pokemon;
   const [cart, setCart] = useRecoilState(cartAtom);
+
+  const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+
   const addToCart = () => {
     const newCart = {
       pokemon: [...cart.pokemon, pokemon],
