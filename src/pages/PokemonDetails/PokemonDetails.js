@@ -7,8 +7,7 @@ import SimpleImageSlider from "react-simple-image-slider";
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
-let imageListDefault = [];
-let imageListFemale = [];
+const imageListDefault = [{}];
 
 const characterValues = {
   a: "1",
@@ -41,77 +40,61 @@ const characterValues = {
 const getPokemonPrice = (name) => {
   return name.length * 5 * characterValues[name[3]];
 };
+const moveDecimalPoint = (weight) => {
+  let weightToModify = weight + "";
+  if (weightToModify.length === 1) {
+    weightToModify = "0." + weightToModify;
+  } else {
+    weightToModify = weightToModify.replace(/([0-9]+)([0-9])/, "$1.$2");
+    weightToModify = weightToModify.replace(/.0$/, "");
+  }
+  return weightToModify;
+};
+
+const toPokemonNumber = (number) => {
+  let numberToModify = number + "";
+  const numberOfCharacters = number.length;
+  if (numberOfCharacters <= 0 || numberOfCharacters >= 5)
+    numberOfCharacters = "000";
+  else if (numberOfCharacters === 1) {
+    numberToModify = "00" + numberToModify;
+  } else if (numberOfCharacters === 2) {
+    numberToModify = "0" + numberToModify;
+  }
+  numberToModify = "#" + numberToModify;
+};
 
 let pokemonDetails;
 const PokemonDetails = () => {
   const { id } = useParams();
-  console.log(id);
   const [isLoading, setIsLoading] = useState(true);
-  const [imageGender, setImageGender] = useState("MALE");
-
-  const [imageToDisplay, setImageToDisplay] = useState("");
-
-  const [imageDefaultCurrent, setImageDefaultCurrent] = useState(
-    imageListDefault[0]
-  );
-  const [imageFemaleCurrent, setImageFemaleCurrent] = useState(
-    imageListFemale[0]
-  );
 
   useEffect(() => {
     const getPokemonDetails = async () => {
       setIsLoading(true);
-      imageListDefault = [];
-      imageFemaleCurrent = [];
+      imageListDefault.splice(0, imageListDefault.length);
       console.log(BASE_URL + id);
       const res = await fetch(`${BASE_URL}${id}`);
       pokemonDetails = await res.json();
       pokemonDetails = { ...pokemonDetails, price: getPokemonPrice(id) };
-      console.log(pokemonDetails.sprites);
+      console.log(pokemonDetails);
 
       Object.keys(pokemonDetails.sprites).forEach((key) => {
         const url = pokemonDetails.sprites[key];
         if (url === null || url === undefined || typeof url !== "string")
           return;
 
-        console.log(key);
         if (key === "back_default") imageListDefault.push({ url: url });
         else if (key === "back_shiny") imageListDefault.push({ url: url });
         else if (key === "front_default")
           imageListDefault.unshift({ url: url });
         else if (key === "front_shiny")
           imageListDefault.splice(2, 0, { url: url });
-        else if (key === "back_female") imageListFemale.push({ url: url });
-        else if (key === "back_shiny_female")
-          imageListFemale.push({ url: url });
-        else if (key === "front_female") imageListFemale.unshift({ url: url });
-        else if (key === "front_shiny_female")
-          imageListFemale.splice(2, 0, { url: url });
-
-        console.log(imageListFemale);
       });
       setIsLoading(false);
     };
     getPokemonDetails();
   }, []);
-
-  const handleGenderClick = (e) => {
-    const classes = e.target.attributes.class.nodeValue;
-    const regex = new RegExp("inactive");
-    if (regex.test(classes)) {
-      setImageGender((imageGender) =>
-        imageGender === "MALE" ? "FEMALE" : "MALE"
-      );
-    }
-  };
-
-  console.log(imageGender);
-  console.log(imageListFemale);
-  if (
-    (imageGender === "MALE" && imageListDefault.length === 1) ||
-    (imageGender === "FEMALE" && imageListFemale.length === 1)
-  )
-    console.log("TRUE");
 
   if (isLoading) {
     return <div>LOADING</div>;
@@ -119,41 +102,18 @@ const PokemonDetails = () => {
 
   return (
     <div className="main_container">
-      <div className="toggle_container_pokemondetails">
-        <div
-          onClick={handleGenderClick}
-          className={
-            imageGender === "MALE"
-              ? "image_gender_pokemondetails  active_pokemondetails"
-              : "image_gender_pokemondetails inactive_pokemondetails"
-          }
-        >
-          MALE
-        </div>
-        <div
-          onClick={handleGenderClick}
-          className={
-            imageGender === "FEMALE"
-              ? "image_gender_pokemondetails active_pokemondetails"
-              : "image_gender_pokemondetails inactive_pokemondetails"
-          }
-        >
-          FEMALE
-        </div>
-      </div>
-      {(imageGender === "MALE" && imageListDefault.length === 0) ||
-      (imageGender === "FEMALE" && imageListFemale.length === 0) ? (
-        <div>Sorry, no {imageGender.toLowerCase()} images are available</div>
-      ) : (
-        <SimpleImageSlider
-          width={400}
-          height={400}
-          images={imageGender === "MALE" ? imageListDefault : imageListFemale}
-          bgColor="#474747"
-          showNavs={true}
-          showBullets={true}
-        />
-      )}{" "}
+      <SimpleImageSlider
+        width={450}
+        height={450}
+        images={imageListDefault}
+        bgColor="#474747"
+        showNavs={true}
+        showBullets={true}
+      />
+
+      <h3>
+        {id} {toPokemonNumber(pokemonDetails?.order)}
+      </h3>
       {pokemonDetails?.types.map((type) => (
         <TypeFlair key={type.type.name} type={type.type.name} />
       ))}
@@ -168,6 +128,13 @@ const PokemonDetails = () => {
           return <li key={ability.ability.name}>{ability.ability.name}</li>;
         })}
       </ul>
+
+      <ul>
+        <li>Psyics</li>
+        <li>height: {pokemonDetails?.height} m</li>
+        <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
+      </ul>
+
       <h3>{pokemonDetails?.price}</h3>
     </div>
   );
