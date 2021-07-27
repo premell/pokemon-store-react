@@ -1,13 +1,13 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
 import { cart as cartAtom } from "../../atoms";
+import { popupMessage as popupMessageAtoms } from "../../atoms";
 import formatAsUSD from "../../shared/formatAsUSD.js";
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
 import PokemonCardCss from "./PokemonCard.module.css";
-
-import { popupMessage as popupMessageAtoms } from "../../atoms";
 
 const PokemonCard = ({ pokemon }) => {
   const { name, image, price, types } = pokemon;
@@ -35,17 +35,27 @@ const PokemonCard = ({ pokemon }) => {
     // console.log(cart);
   }, [cart]);
 
+  const handleClick2 = () => {
+    console.log("HELLO2");
+  };
+
   return (
     <div className={PokemonCardCss.container}>
-      <div className={PokemonCardCss.clickable_container}>
+      <Link
+        className={PokemonCardCss.clickable_container}
+        to={{
+          pathname: `/pokemon/${pokemon.name}`,
+          state: { pokemon: pokemon },
+        }}
+      >
         <img src={image} />
-        <h4 className={PokemonCardCss.name}> {name}</h4>
+        <span className={PokemonCardCss.name}> {name}</span>
         <div>
           {types.map((type) => (
             <TypeFlair key={type.type.name} type={type.type.name} />
           ))}
         </div>
-      </div>
+      </Link>
       <h3>{formatAsUSD(price)}</h3>
       {cart.pokemon.find((cartPokemon) => cartPokemon.name === name) ===
       undefined ? (
