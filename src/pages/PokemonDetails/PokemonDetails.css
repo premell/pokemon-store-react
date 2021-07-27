@@ -1,0 +1,18 @@
+.toggle_container_pokemondetails {
+  width: 250px;
+  border-radius: 10px;
+}
+.image_gender_pokemondetails {
+  display: inline-block;
+  padding: 10px;
+  width: 40%;
+  text-align: center;
+}
+
+.active_pokemondetails {
+  background-color: #787878;
+}
+.inactive_pokemondetails {
+  background-color: #c8c8c8;
+  cursor: pointer;
+}
