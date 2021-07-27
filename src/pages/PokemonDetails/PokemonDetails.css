@@ -16,3 +16,25 @@
   background-color: #c8c8c8;
   cursor: pointer;
 }
+
+.main_container_stats_card {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
+  border-radius: 5px;
+  width: 25%;
+  margin: 5px;
+  margin-left: 20px;
+
+  justify-content: center;
+}
+
+.main_container_stats_card div {
+  flex: 1 0 100%;
+  text-align: center;
+}
+.main_container_stats_list {
+  width: 400px;
+  display: flex;
+  flex-wrap: wrap;
+}

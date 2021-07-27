@@ -3,6 +3,7 @@ import "./PokemonDetails.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SimpleImageSlider from "react-simple-image-slider";
+import StatsList from "./StatsList";
 
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
@@ -62,6 +63,7 @@ const toPokemonNumber = (number) => {
     numberToModify = "0" + numberToModify;
   }
   numberToModify = "#" + numberToModify;
+  return numberToModify;
 };
 
 let pokemonDetails;
@@ -135,6 +137,9 @@ const PokemonDetails = () => {
         <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
       </ul>
 
+      <div>
+        <StatsList stats={pokemonDetails?.stats} />
+      </div>
       <h3>{pokemonDetails?.price}</h3>
     </div>
   );
