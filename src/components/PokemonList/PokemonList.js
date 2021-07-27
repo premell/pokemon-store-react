@@ -3,7 +3,6 @@ import PokemonCard from "./PokemonCard";
 import PokemonListCss from "./PokemonList.module.css";
 
 const PokemonList = ({ pokemons, isLoading }) => {
-  //console.log(pokemons);
   if (isLoading) {
     return (
       <div className={PokemonListCss.main_container}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { pokemons as pokemonAtoms } from "../../atoms";
@@ -107,30 +107,68 @@ const Home = () => {
     SORTING_METHODS.PRICE_LOWEST_FIRST
   );
 
-  const getPokemonObjects = useCallback(
-    async (refrencePokemons) => {
+  useEffect(() => {
+    console.log(storedPokemonNames);
+    console.log(storedPokemons);
+  }, [storedPokemonNames, storedPokemons]);
+
+  // const setPokemonObjectsToDisplay = useCallback(
+  //   async (refrencePokemons) => {
+  //      console.log("exectued")
+  //     const pokemons = [];
+  //     for (const pokemon of refrencePokemons) {
+  //       const pokemonName = pokemon.name;
+  //       if (storedPokemonNames.includes(pokemonName)) {
+  //         const newPokemon = storedPokemons.find(
+  //           (pokemon) => pokemon.name === pokemonName
+  //         );
+  //         pokemons.push(newPokemon);
+  //       } else {
+  //         const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
+  //         const newPokemon = {
+  //           name: pokemonName,
+  //           types: data2.types,
+  //           image: data2.sprites.front_default,
+  //           price: pokemon.price,
+  //         };
+  //         storedPokemons.push(newPokemon);
+  //         pokemons.push(newPokemon);
+  //       }
+  //     }
+  //     return pokemons;
+  //   },
+  //   [storedPokemonNames, storedPokemons]
+  // );
+
+  const setPokemonObjectsToDisplay = useCallback(
+    (refrencePokemons) => {
+      console.log("HELLO");
       const pokemons = [];
-      for (const pokemon of refrencePokemons) {
-        const pokemonName = pokemon.name;
-        if (storedPokemonNames.includes(pokemonName)) {
-          const newPokemon = storedPokemons.find(
-            (pokemon) => pokemon.name === pokemonName
-          );
-          pokemons.push(newPokemon);
-        } else {
-          const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
-          const newPokemon = {
-            name: pokemonName,
-            types: data2.types,
-            image: data2.sprites.front_default,
-            price: pokemon.price,
-          };
-          storedPokemons.push(newPokemon);
-          storedPokemonNames.push(pokemonName);
-          pokemons.push(newPokemon);
-        }
-      }
-      return pokemons;
+
+      Promise.all(
+        refrencePokemons.map(async (pokemon) => {
+          const pokemonName = pokemon.name;
+          if (storedPokemonNames.includes(pokemonName)) {
+            const newPokemon = storedPokemons.find(
+              (pokemon) => pokemon.name === pokemonName
+            );
+            pokemons.push(newPokemon);
+          } else {
+            const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
+            const newPokemon = {
+              name: pokemonName,
+              types: data2.types,
+              image: data2.sprites.front_default,
+              price: pokemon.price,
+            };
+            storedPokemons.push(newPokemon);
+            storedPokemonNames.push(pokemonName);
+            pokemons.push(newPokemon);
+          }
+        })
+      ).then(() => {
+        setPokemonsToDisplay(pokemons);
+      });
     },
     [storedPokemonNames, storedPokemons]
   );
@@ -163,7 +201,6 @@ const Home = () => {
   }, [typesToFilter]);
 
   useEffect(() => {
-    console.log(pricesToFilter);
     const filteredPokemons = [...typeFilteredPokemon];
 
     const filteredPokemonsByMinPrice = filteredPokemons.filter(
@@ -215,8 +252,10 @@ const Home = () => {
         startPokemon,
         endPokemon
       );
-      const pokemons = await getPokemonObjects(pokemonToDisplay);
-      setPokemonsToDisplay(pokemons);
+      setPokemonObjectsToDisplay(pokemonToDisplay);
+      // const pokemons = await setPokemonObjectsToDisplay(pokemonToDisplay);
+      // console.log(pokemons);
+      // setPokemonsToDisplay(pokemons);
     };
     displayPokemon();
   }, [allSortedPokemons]);
@@ -233,7 +272,7 @@ const Home = () => {
       <div className={HomeCss.main_container}>
         <SidePanelFilters
           setPricesToFilter={setPricesToFilter}
-          setTypeFilters={setTypesToFilter}
+          setTypesToFilter={setTypesToFilter}
         />
         <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
       </div>
