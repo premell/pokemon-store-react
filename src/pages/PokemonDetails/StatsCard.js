@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 const StatsCard = ({ stats, type }) => {
   const [color, setColor] = useState("");
   const [pokemonType, setPokemonType] = useState("");
-  console.log(stats);
-  console.log(type);
 
   useEffect(() => {
     let color = "white";

@@ -6,6 +6,9 @@ import SimpleImageSlider from "react-simple-image-slider";
 import StatsList from "./StatsList";
 
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
+{
+  /* import CartFunctions from "../../shared/CartFunctions"; */
+}
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
 const imageListDefault = [{}];
@@ -75,11 +78,9 @@ const PokemonDetails = () => {
     const getPokemonDetails = async () => {
       setIsLoading(true);
       imageListDefault.splice(0, imageListDefault.length);
-      console.log(BASE_URL + id);
       const res = await fetch(`${BASE_URL}${id}`);
       pokemonDetails = await res.json();
       pokemonDetails = { ...pokemonDetails, price: getPokemonPrice(id) };
-      console.log(pokemonDetails);
 
       Object.keys(pokemonDetails.sprites).forEach((key) => {
         const url = pokemonDetails.sprites[key];
@@ -105,8 +106,8 @@ const PokemonDetails = () => {
   return (
     <div className="main_container">
       <SimpleImageSlider
-        width={450}
-        height={450}
+        width={350}
+        height={350}
         images={imageListDefault}
         bgColor="#474747"
         showNavs={true}
@@ -141,6 +142,7 @@ const PokemonDetails = () => {
         <StatsList stats={pokemonDetails?.stats} />
       </div>
       <h3>{pokemonDetails?.price}</h3>
+      {/* <div onClick={CartFunctions.addToCart(pokemonDetails)}>ADD TO CART</div> */}
     </div>
   );
 };

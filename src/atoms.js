@@ -5,7 +5,7 @@ const { persistAtom } = recoilPersist();
 
 export const pokemons = atom({ key: "pokemons", default: [] });
 
-export const cart = atom({ key: "cart", default: { pokemon: [], total: 0 } });
+const consoleLog = (value) => console.log(value);
 
 export const searchValue = atom({ key: "searchValue", default: "" });
 
@@ -15,5 +15,34 @@ export const popupMessage = atom({
     show: false,
     message: "hello",
     type: "positive",
+  },
+});
+
+export const cart = atom({
+  key: "cart",
+  default: {
+    pokemon: [
+      {
+        image:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+        name: "abra",
+        price: 20,
+      },
+
+      {
+        image:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+        name: "abrasdfa",
+        price: 20,
+      },
+
+      {
+        image:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+        name: "a1kkkbra",
+        price: 20,
+      },
+    ],
+    total: 0,
   },
 });

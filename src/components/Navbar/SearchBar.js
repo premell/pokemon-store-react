@@ -21,25 +21,19 @@ const SearchBar = () => {
   }
 
   useEffect(() => {
-    //debounce(() => setSearchValue(temporarySearchValue));
+    const timeId = setTimeout(() => {
+      setSearchValue(temporarySearchValue);
+    }, 400);
+    return () => {
+      clearTimeout(timeId);
+    };
   }, [temporarySearchValue]);
-
-  const consoleLog = () => {
-    console.log("HELLO");
-  };
-
-  const delayedSetSeachValue = (inputValue) => {
-    setTemporarySearchValue(inputValue);
-    debounce(() => {
-      consoleLog();
-    }, 2000);
-  };
 
   return (
     <>
       <input
         value={temporarySearchValue}
-        onChange={(e) => delayedSetSeachValue(e.target.value)}
+        onChange={(e) => setTemporarySearchValue(e.target.value)}
       />
     </>
   );
