@@ -22,7 +22,7 @@ const Navbar = () => {
           }}
         >
           <div className={NavbarCss.cart_container}>
-            <FiShoppingCart size={25} />
+            <FiShoppingCart size={30} />
             <div className={NavbarCss.cart_index}>{cart.pokemon.length}</div>
           </div>
         </IconContext.Provider>

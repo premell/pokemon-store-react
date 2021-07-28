@@ -10,6 +10,7 @@ import { popupMessage as popupMessageAtoms } from "../../atoms";
 import PopupMessage from "../../shared/PopupMessage/PopupMessage";
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
+import ImageList from "./ImageList";
 import StatsList from "./StatsList";
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
@@ -79,6 +80,7 @@ const PokemonDetails = () => {
   const [cart, setCart] = useRecoilState(cartAtom);
 
   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+  const [currentImage, setCurrentImage] = useState("");
 
   useEffect(() => {
     const getPokemonDetails = async () => {
@@ -93,12 +95,15 @@ const PokemonDetails = () => {
         if (url === null || url === undefined || typeof url !== "string")
           return;
 
-        if (key === "back_default") imageListDefault.push({ url: url });
-        else if (key === "back_shiny") imageListDefault.push({ url: url });
-        else if (key === "front_default")
-          imageListDefault.unshift({ url: url });
-        else if (key === "front_shiny")
-          imageListDefault.splice(2, 0, { url: url });
+        if (key === "back_default")
+          imageListDefault.push({ name: key, url: url });
+        else if (key === "back_shiny")
+          imageListDefault.push({ name: key, url: url });
+        else if (key === "front_default") {
+          imageListDefault.unshift({ name: key, url: url });
+          setCurrentImage({ name: key, url: url });
+        } else if (key === "front_shiny")
+          imageListDefault.splice(2, 0, { name: key, url: url });
       });
       setIsLoading(false);
     };
@@ -161,6 +166,14 @@ const PokemonDetails = () => {
     };
   }, [popupMessage]);
 
+  const setPrimaryImage = (image) => {
+    const newPrimaryImage = imageListDefault.filter(
+      (imageToFilter) => imageToFilter.name === image.name
+    );
+
+    setCurrentImage(newPrimaryImage[0]);
+  };
+
   if (isLoading) {
     return <div>LOADING</div>;
   }
@@ -172,18 +185,17 @@ const PokemonDetails = () => {
         message={popupMessage.message}
         type={popupMessage.type}
       />
-      <SimpleImageSlider
-        width={350}
-        height={350}
-        images={imageListDefault}
-        bgColor="#474747"
-        showNavs={true}
-        showBullets={true}
-      />
-
+      <div className="pokemon_container_pokemondetails">
+        <ImageList
+          setPrimaryImage={setPrimaryImage}
+          images={imageListDefault}
+          currentImage={currentImage}
+        />
+        <img className="main_image_pokemondetails" src={currentImage.url} />
+      </div>
       <h3>
         {id} {toPokemonNumber(pokemonDetails?.order)}
-      </h3>
+      </h3>{" "}
       {pokemonDetails?.types.map((type) => (
         <TypeFlair key={type.type.name} type={type.type.name} />
       ))}
@@ -198,13 +210,11 @@ const PokemonDetails = () => {
           return <li key={ability.ability.name}>{ability.ability.name}</li>;
         })}
       </ul>
-
       <ul>
         <li>Psyics</li>
         <li>height: {pokemonDetails?.height} m</li>
         <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
       </ul>
-
       <div>
         <StatsList stats={pokemonDetails?.stats} />
       </div>
@@ -222,7 +232,7 @@ const PokemonDetails = () => {
         >
           remove from cart
         </div>
-      )}
+      )}{" "}
     </div>
   );
 };
