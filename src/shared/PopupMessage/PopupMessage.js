@@ -1,43 +1,24 @@
+import "./PopupMessage.css";
+
 import clsx from "clsx";
-import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
-import PopupMessageCss from "./PopupMessage.module.css";
-
-const PopupMessage = ({message, type}) => {
-  if(type === "positive"){
-
+const PopupMessage = ({ show, message, type }) => {
   return (
     <>
       <div
-        className={`${PopupMessageCss.main_container} ${PopupMessageCss.positive}`}
+        className={`${
+          show ? "show_popup_message" : "hide_popup_message"
+        } ${type}_popup_message main_container_popup_message`}
       >
-        <div className={PopupMessageCss.main_message}>{message}</div>
-        <div className={PopupMessageCss.go_to_cart}>
+        <div className="main_message_popup_message">{message}</div>
+        <div className="go_to_cart_popup_message">
           <Link to="/cart">
             <p>to cart</p>
           </Link>
         </div>
       </div>
     </>
-
-  }
-    else{
-  return (
-    <>
-      <div
-        className={`${PopupMessageCss.main_container} ${PopupMessageCss.negative}`}
-      >
-        <div className={PopupMessageCss.main_message}>{message}</div>
-        <div className={PopupMessageCss.go_to_cart}>
-          <Link to="/cart">
-            <p>to cart</p>
-          </Link>
-        </div>
-      </div>
-    </>
-
-
-    }
   );
 };
 

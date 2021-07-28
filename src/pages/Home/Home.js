@@ -146,7 +146,6 @@ const Home = () => {
 
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
-      console.log("HELLO");
       const pokemons = [];
 
       Promise.all(
@@ -213,9 +212,11 @@ const Home = () => {
     const filteredPokemonsByMaxPrice = filteredPokemonsByMinPrice.filter(
       (pokemon) => pokemon.price <= pricesToFilter.max
     );
+    console.table(filteredPokemons);
     const filteredPokemonsBySearchQuery = filteredPokemonsByMaxPrice.filter(
       (pokemon) => pokemon.name.includes(searchValue)
     );
+    console.table(filteredPokemons);
 
     setAllFilteredPokemons(filteredPokemonsBySearchQuery);
   }, [typeFilteredPokemon, pricesToFilter, searchValue]);
@@ -270,9 +271,11 @@ const Home = () => {
 
   return (
     <main>
-      {popupMessage.show && (
-        <PopupMessage message={popupMessage.message} type={popupMessage.type} />
-      )}
+      <PopupMessage
+        show={popupMessage.show}
+        message={popupMessage.message}
+        type={popupMessage.type}
+      />
       <p>{searchValue}</p>
       <div onClick={() => addType()}>CLICK</div>
       <Navbar />

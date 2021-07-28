@@ -1,4 +1,4 @@
-.main_container {
+.main_container_popup_message {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -11,10 +11,9 @@
   color: white;
   background-color: #00e64d;
   font-weight: bold;
-  visibility: none;
 }
 
-.go_to_cart {
+.go_to_cart_popup_message {
   cursor: pointer;
   border-radius: 5px;
   text-align: center;
@@ -30,16 +29,24 @@
   text-decoration: none;
 }
 
-.go_to_cart:hover {
+.go_to_cart_popup_message:hover {
 }
 
-.positive {
+.positive_popup_message {
   background-color: #00e64d;
 }
-.negative {
+.negative_popup_message {
   background-color: #e64d00;
 }
 
-.show {
+.show_popup_message {
+  top: 0;
   visibility: visible;
+  transition: 300ms;
+}
+
+.hide_popup_message {
+  top: -50px;
+  visibility: hidden;
+  transition: 300ms;
 }

@@ -12,7 +12,7 @@ export const searchValue = atom({ key: "searchValue", default: "" });
 export const popupMessage = atom({
   key: "popupMessage",
   default: {
-    show: true,
+    show: false,
     message: "hello",
     type: "positive",
   },

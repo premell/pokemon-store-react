@@ -38,22 +38,22 @@ const PokemonCard = ({ pokemon }) => {
     setCart({ pokemon: newCartPokemon, total: newTotal });
 
     const newPopupMessage = {
-      message: `${pokemon.name} removed`,
+      message: `${pokemon.name} removed from cart`,
       show: true,
       type: "negative",
     };
     setPopupMessage(newPopupMessage);
   };
 
-  //   useEffect(() => {
-  //     const timeId = setTimeout(() => {
-  //       setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
-  //     }, 3000);
-  //
-  //     return () => {
-  //       clearTimeout(timeId);
-  //     };
-  //   }, [popupMessage]);
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [popupMessage]);
 
   return (
     <div className={PokemonCardCss.container}>
