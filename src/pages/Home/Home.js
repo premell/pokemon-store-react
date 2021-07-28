@@ -212,11 +212,9 @@ const Home = () => {
     const filteredPokemonsByMaxPrice = filteredPokemonsByMinPrice.filter(
       (pokemon) => pokemon.price <= pricesToFilter.max
     );
-    console.table(filteredPokemons);
     const filteredPokemonsBySearchQuery = filteredPokemonsByMaxPrice.filter(
       (pokemon) => pokemon.name.includes(searchValue)
     );
-    console.table(filteredPokemons);
 
     setAllFilteredPokemons(filteredPokemonsBySearchQuery);
   }, [typeFilteredPokemon, pricesToFilter, searchValue]);

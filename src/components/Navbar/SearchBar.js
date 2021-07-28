@@ -8,11 +8,38 @@ import { searchValue as searchValueAtoms } from "../../atoms";
 
 const SearchBar = () => {
   const [searchValue, setSearchValue] = useRecoilState(searchValueAtoms);
+  const [temporarySearchValue, setTemporarySearchValue] = useState("");
+
+  function debounce(callback, wait) {
+    let timerId;
+    return (...args) => {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        callback(...args);
+      }, wait);
+    };
+  }
+
+  useEffect(() => {
+    //debounce(() => setSearchValue(temporarySearchValue));
+  }, [temporarySearchValue]);
+
+  const consoleLog = () => {
+    console.log("HELLO");
+  };
+
+  const delayedSetSeachValue = (inputValue) => {
+    setTemporarySearchValue(inputValue);
+    debounce(() => {
+      consoleLog();
+    }, 2000);
+  };
+
   return (
     <>
       <input
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        value={temporarySearchValue}
+        onChange={(e) => delayedSetSeachValue(e.target.value)}
       />
     </>
   );
