@@ -3,3 +3,9 @@
   width: 500px;
   flex: 1;
 }
+
+@media (max-width: 530px) {
+  .main_container {
+    display: none;
+  }
+}

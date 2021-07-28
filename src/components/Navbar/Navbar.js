@@ -7,11 +7,13 @@ import SearchBar from "./SearchBar";
 
 import { Link } from "react-router-dom";
 
+import NavbarCss from "./Navbar.module.css";
+
 const Navbar = () => {
   const [cart, setCart] = useRecoilState(cartAtom);
 
   return (
-    <div>
+    <div className={NavbarCss.main_container}>
       <SearchBar />
       <Link to="/Cart">
         <FaShoppingCart />

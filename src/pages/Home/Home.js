@@ -274,8 +274,6 @@ const Home = () => {
         message={popupMessage.message}
         type={popupMessage.type}
       />
-      <p>{searchValue}</p>
-      <div onClick={() => addType()}>CLICK</div>
       <Navbar />
       <div className={HomeCss.main_container}>
         <SidePanelFilters
