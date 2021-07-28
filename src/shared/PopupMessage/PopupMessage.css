@@ -1,5 +1,5 @@
 .main_container_popup_message {
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;

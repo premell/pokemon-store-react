@@ -38,3 +38,34 @@
   display: flex;
   flex-wrap: wrap;
 }
+
+.add_button_pokemondetails {
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: #00e64d;
+  border-radius: 5px;
+  width: 90%;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.delete_button_pokemondetails {
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: #e64d00;
+  border-radius: 5px;
+  width: 90%;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+.add_button_pokemondetails :hover {
+  background-color: #00b23b;
+}
+
+.delete_button_pokemondetails :hover {
+  background-color: #b23b00;
+}

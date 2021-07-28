@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import CartList from "./CartList.js";
 const Cart = () => {
   const [cart, setCart] = useRecoilState(cartAtom);
+
   return (
     <div>
       <CartList cartPokemons={cart.pokemon} />

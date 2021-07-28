@@ -1,52 +1,69 @@
-import {useEffect} from "react";
-import {useRecoilState} from "recoil";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 
-import {cart as cartAtom} from "../atoms";
-import {popupMessage as popupMessageAtoms} from "../atoms";
+import { cart as cartAtom } from "../atoms";
+import { popupMessage as popupMessageAtoms } from "../atoms";
 
-const [cart, setCart] = useRecoilState(cartAtom);
-const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+export const useAddToCart = (pokemon) => {
+  const [cart, setCart] = useRecoilState(cartAtom);
+  const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+  console.log(pokemon);
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [popupMessage]);
 
-useEffect(() => {
+  const newcart = {
+    pokemon: [...cart.pokemon, pokemon],
+    total: cart.total + pokemon.price,
+  };
+  setCart(newcart);
 
-          })
+  const newpopupmessage = {
+    message: `${pokemon.name} added to cart`,
+    show: true,
+    type: "positive",
+  };
+  setPopupMessage(newpopupmessage);
+};
+export default useAddToCart;
 
-export default const useTest =
-    () => {
-
-    }
-// export default const useDeleteFromCart = () => {
-//   const newCartPokemon =
-//       cart.pokemon.filter((cartPokemon) => cartPokemon.name !==
+// export default const usedeletefromcart = () => {
+//   const newcartpokemon =
+//       cart.pokemon.filter((cartpokemon) => cartpokemon.name !==
 //       pokemon.name);
-//   const newTotal = cart.total - pokemon.price;
-//   setCart({pokemon : newCartPokemon, total : newTotal});
+//   const newtotal = cart.total - pokemon.price;
+//   setcart({pokemon : newcartpokemon, total : newtotal});
 //
-//   const newPopupMessage = {
+//   const newpopupmessage = {
 //     message : `${pokemon.name} removed from cart`,
 //     show : true,
 //     type : "negative",
 //   };
-//   setPopupMessage(newPopupMessage);
+//   setpopupmessage(newpopupmessage);
 // };
 // }
 
-// import {useEffect} from "react";
+// import {useeffect} from "react";
 
-// import {useRecoilState} from "recoil";
+// import {userecoilstate} from "recoil";
 //
-// import {cart as cartAtom} from "../atoms";
-// import {popupMessage as popupMessageAtoms} from "../atoms";
+// import {cart as cartatom} from "../atoms";
+// import {popupmessage as popupmessageatoms} from "../atoms";
 //
-// const CartFunctions = {
-//   const [cart, setCart] = useRecoilState(cartAtom);
-//   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+// const cartfunctions = {
+//   const [cart, setcart] = userecoilstate(cartatom);
+//   const [popupmessage, setpopupmessage] = userecoilstate(popupmessageatoms);
 //
 //   console.log(pokemon);
 //
-//   const addToCart =
+//   const addtocart =
 //       () => {
-//         const newCart = {
+//         const newcart = {
 //           pokemon : [...cart.pokemon, pokemon ],
 //           total : cart.total + pokemon.price,
 //         };

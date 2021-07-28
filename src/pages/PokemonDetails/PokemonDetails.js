@@ -3,12 +3,14 @@ import "./PokemonDetails.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SimpleImageSlider from "react-simple-image-slider";
-import StatsList from "./StatsList";
+import { useRecoilState } from "recoil";
 
+import { cart as cartAtom } from "../../atoms";
+import { popupMessage as popupMessageAtoms } from "../../atoms";
+import PopupMessage from "../../shared/PopupMessage/PopupMessage";
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
-{
-  /* import CartFunctions from "../../shared/CartFunctions"; */
-}
+
+import StatsList from "./StatsList";
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
 const imageListDefault = [{}];
@@ -74,6 +76,10 @@ const PokemonDetails = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
+  const [cart, setCart] = useRecoilState(cartAtom);
+
+  const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
+
   useEffect(() => {
     const getPokemonDetails = async () => {
       setIsLoading(true);
@@ -99,12 +105,73 @@ const PokemonDetails = () => {
     getPokemonDetails();
   }, []);
 
+  const addToCart = () => {
+    const alreadyExists = cart.pokemon.find(
+      (pokemon) => pokemon.name === pokemonDetails.name
+    );
+    let newPopupMessage = {
+      message: `${pokemonDetails.name} added to cart`,
+      show: true,
+      type: "positive",
+    };
+    if (alreadyExists === undefined) {
+      const newCart = {
+        pokemon: [
+          ...cart.pokemon,
+          {
+            name: pokemonDetails.name,
+            image: pokemonDetails.sprites.front_default,
+            price: pokemonDetails.price,
+          },
+        ],
+        total: cart.total + pokemonDetails.price,
+      };
+      setCart(newCart);
+    } else {
+      newPopupMessage.message = `${pokemonDetails.name} already exists in cart`;
+    }
+
+    setPopupMessage(newPopupMessage);
+  };
+
+  const deleteFromCart = () => {
+    const newCartPokemon = cart.pokemon.filter(
+      (cartPokemon) => cartPokemon.name !== pokemonDetails.name
+    );
+    const newTotal = cart.total - pokemonDetails.price;
+    setCart({ pokemon: newCartPokemon, total: newTotal });
+
+    const newPopupMessage = {
+      message: `${pokemonDetails.name} removed from cart`,
+      show: true,
+      type: "negative",
+    };
+    setPopupMessage(newPopupMessage);
+  };
+
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      console.log(popupMessage);
+      if (popupMessage.show === true)
+        setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [popupMessage]);
+
   if (isLoading) {
     return <div>LOADING</div>;
   }
 
   return (
     <div className="main_container">
+      <PopupMessage
+        show={popupMessage.show}
+        message={popupMessage.message}
+        type={popupMessage.type}
+      />
       <SimpleImageSlider
         width={350}
         height={350}
@@ -142,9 +209,21 @@ const PokemonDetails = () => {
         <StatsList stats={pokemonDetails?.stats} />
       </div>
       <h3>{pokemonDetails?.price}</h3>
-      {/* <div onClick={CartFunctions.addToCart(pokemonDetails)}>ADD TO CART</div> */}
+      {cart.pokemon.find(
+        (cartPokemon) => cartPokemon.name === pokemonDetails.name
+      ) === undefined ? (
+        <div onClick={() => addToCart()} className="add_button_pokemondetails">
+          add to cart
+        </div>
+      ) : (
+        <div
+          onClick={() => deleteFromCart()}
+          className="delete_button_pokemondetails"
+        >
+          remove from cart
+        </div>
+      )}
     </div>
   );
 };
-
 export default PokemonDetails;

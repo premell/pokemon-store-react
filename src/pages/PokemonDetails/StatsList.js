@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import StatsCard from "./StatsCard";
 import "./PokemonDetails.css";
 const StatsList = ({ stats }) => {
-  console.log(stats);
   const [pokemonStats, setPokemonStats] = useState([]);
 
   useEffect(() => {
