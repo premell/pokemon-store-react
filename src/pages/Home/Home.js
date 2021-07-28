@@ -86,7 +86,7 @@ const getAllPokemons = async () => {
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pokemonsPerPage, setPokemonsPerPage] = useState(40);
+  const [pokemonsPerPage, setPokemonsPerPage] = useState(20);
 
   const [typeFilteredPokemon, setTypeFilteredPokemon] = useState([]);
   const [allFilteredPokemons, setAllFilteredPokemons] = useState([]);
@@ -110,7 +110,6 @@ const Home = () => {
   );
 
   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
-  console.log(popupMessage);
 
   useEffect(() => {
     console.log(storedPokemonNames);

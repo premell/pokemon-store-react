@@ -21,6 +21,13 @@ const PokemonCard = ({ pokemon }) => {
       total: cart.total + price,
     };
     setCart(newCart);
+
+    const newPopupMessage = {
+      message: `${pokemon.name} added to cart`,
+      show: true,
+      type: "positive",
+    };
+    setPopupMessage(newPopupMessage);
   };
 
   const deleteFromCart = () => {
@@ -29,15 +36,24 @@ const PokemonCard = ({ pokemon }) => {
     );
     const newTotal = cart.total - price;
     setCart({ pokemon: newCartPokemon, total: newTotal });
+
+    const newPopupMessage = {
+      message: `${pokemon.name} removed`,
+      show: true,
+      type: "negative",
+    };
+    setPopupMessage(newPopupMessage);
   };
 
-  useEffect(() => {
-    // console.log(cart);
-  }, [cart]);
-
-  const handleClick2 = () => {
-    console.log("HELLO2");
-  };
+  //   useEffect(() => {
+  //     const timeId = setTimeout(() => {
+  //       setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+  //     }, 3000);
+  //
+  //     return () => {
+  //       clearTimeout(timeId);
+  //     };
+  //   }, [popupMessage]);
 
   return (
     <div className={PokemonCardCss.container}>
