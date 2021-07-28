@@ -60,7 +60,7 @@ const moveDecimalPoint = (weight) => {
 
 const toPokemonNumber = (number) => {
   let numberToModify = number + "";
-  const numberOfCharacters = number.length;
+  const numberOfCharacters = number?.length;
   if (numberOfCharacters <= 0 || numberOfCharacters >= 5)
     numberOfCharacters = "000";
   else if (numberOfCharacters === 1) {
@@ -73,6 +73,7 @@ const toPokemonNumber = (number) => {
 };
 
 let pokemonDetails;
+let pokedexEntry;
 const PokemonDetails = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +89,21 @@ const PokemonDetails = () => {
       imageListDefault.splice(0, imageListDefault.length);
       const res = await fetch(`${BASE_URL}${id}`);
       pokemonDetails = await res.json();
-      pokemonDetails = { ...pokemonDetails, price: getPokemonPrice(id) };
+
+      const res2 = await fetch(
+        `https://pokeapi.co/api/v2/pokemon-species/${id}`
+      );
+      const data = await res2.json();
+      for (const entry of data.flavor_text_entries) {
+        if (entry.language.name === "en") {
+          pokedexEntry = entry.flavor_text;
+        }
+      }
+      pokemonDetails = {
+        ...pokemonDetails,
+        pokedexEntry: pokedexEntry,
+        price: getPokemonPrice(id),
+      };
 
       Object.keys(pokemonDetails.sprites).forEach((key) => {
         const url = pokemonDetails.sprites[key];
@@ -107,6 +122,7 @@ const PokemonDetails = () => {
       });
       setIsLoading(false);
     };
+
     getPokemonDetails();
   }, []);
 
@@ -192,24 +208,28 @@ const PokemonDetails = () => {
           currentImage={currentImage}
         />
         <img className="main_image_pokemondetails" src={currentImage.url} />
+        <div className="details_container_pokemondetails">
+          <h3>
+            {id} {toPokemonNumber(pokemonDetails?.order)}
+          </h3>
+
+          {pokemonDetails?.types.map((type) => (
+            <TypeFlair key={type.type.name} type={type.type.name} />
+          ))}
+          <ul>
+            {pokemonDetails?.abilities.map((ability) => {
+              if (ability.is_hidden === true) return;
+              return <li key={ability.ability.name}>{ability.ability.name}</li>;
+            })}
+            <li className="ability_divider">Hidden: </li>
+            {pokemonDetails?.abilities.map((ability) => {
+              if (ability.is_hidden === false) return;
+              return <li key={ability.ability.name}>{ability.ability.name}</li>;
+            })}
+          </ul>
+        </div>
+        <p>{pokemonDetails.pokedexEntry}</p>
       </div>
-      <h3>
-        {id} {toPokemonNumber(pokemonDetails?.order)}
-      </h3>{" "}
-      {pokemonDetails?.types.map((type) => (
-        <TypeFlair key={type.type.name} type={type.type.name} />
-      ))}
-      <ul>
-        {pokemonDetails?.abilities.map((ability) => {
-          if (ability.is_hidden === true) return;
-          return <li key={ability.ability.name}>{ability.ability.name}</li>;
-        })}
-        <li className="ability_divider">Hidden: </li>
-        {pokemonDetails?.abilities.map((ability) => {
-          if (ability.is_hidden === false) return;
-          return <li key={ability.ability.name}>{ability.ability.name}</li>;
-        })}
-      </ul>
       <ul>
         <li>Psyics</li>
         <li>height: {pokemonDetails?.height} m</li>

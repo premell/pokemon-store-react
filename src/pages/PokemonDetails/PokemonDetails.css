@@ -70,6 +70,9 @@
   background-color: #b23b00;
 }
 
+.pokemon_container_pokemondetails {
+  display: flex;
+}
 .main_container_image_list {
   display: flex;
   flex-direction: column;
@@ -100,4 +103,7 @@
 .main_image_pokemondetails {
   width: 450px;
   height: 450px;
+}
+
+.details_container_pokemondetails {
 }
