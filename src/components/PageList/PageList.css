@@ -1,3 +1,21 @@
 .currentPage {
   background-color: red;
 }
+
+.page_container_page_list {
+  display: flex;
+}
+
+.page_main_container_page_list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.number_page_list {
+  padding: 7px;
+  font-size: 17px;
+}
+.number_page_list:hover {
+  cursor: pointer;
+}

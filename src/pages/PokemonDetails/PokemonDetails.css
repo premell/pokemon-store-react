@@ -71,8 +71,16 @@
 }
 
 .pokemon_container_pokemondetails {
-  display: flex;
 }
+
+.top_container_pokemondetails {
+  display: flex;
+  width: 100%;
+}
+.bottom_container_pokemondetails {
+  width: 100%;
+}
+
 .main_container_image_list {
   display: flex;
   flex-direction: column;

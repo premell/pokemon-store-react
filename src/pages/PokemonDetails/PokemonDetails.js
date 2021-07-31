@@ -202,57 +202,71 @@ const PokemonDetails = () => {
         type={popupMessage.type}
       />
       <div className="pokemon_container_pokemondetails">
-        <ImageList
-          setPrimaryImage={setPrimaryImage}
-          images={imageListDefault}
-          currentImage={currentImage}
-        />
-        <img className="main_image_pokemondetails" src={currentImage.url} />
-        <div className="details_container_pokemondetails">
-          <h3>
-            {id} {toPokemonNumber(pokemonDetails?.order)}
-          </h3>
-
-          {pokemonDetails?.types.map((type) => (
-            <TypeFlair key={type.type.name} type={type.type.name} />
-          ))}
-          <ul>
-            {pokemonDetails?.abilities.map((ability) => {
-              if (ability.is_hidden === true) return;
-              return <li key={ability.ability.name}>{ability.ability.name}</li>;
-            })}
-            <li className="ability_divider">Hidden: </li>
-            {pokemonDetails?.abilities.map((ability) => {
-              if (ability.is_hidden === false) return;
-              return <li key={ability.ability.name}>{ability.ability.name}</li>;
-            })}
-          </ul>
+        <div className="top_container_pokemondetails">
+          <ImageList
+            setPrimaryImage={setPrimaryImage}
+            images={imageListDefault}
+            currentImage={currentImage}
+          />
+          <img className="main_image_pokemondetails" src={currentImage.url} />
+          <div className="left_container_pokemondetails">
+            <h3>
+              {id} {toPokemonNumber(pokemonDetails?.order)}
+            </h3>
+            <div style={{ display: "flex" }}>
+              {pokemonDetails?.types.map((type) => (
+                <TypeFlair key={type.type.name} type={type.type.name} />
+              ))}
+            </div>
+            <p>abilities</p>
+            <ul>
+              {pokemonDetails?.abilities.map((ability) => {
+                if (ability.is_hidden === true) return;
+                return (
+                  <li key={ability.ability.name}>{ability.ability.name}</li>
+                );
+              })}
+              <li className="ability_divider">Hidden: </li>
+              {pokemonDetails?.abilities.map((ability) => {
+                if (ability.is_hidden === false) return;
+                return (
+                  <li key={ability.ability.name}>{ability.ability.name}</li>
+                );
+              })}
+            </ul>
+            <div>
+              <StatsList stats={pokemonDetails?.stats} />
+            </div>
+            <h3>{pokemonDetails?.price}</h3>
+            {cart.pokemon.find(
+              (cartPokemon) => cartPokemon.name === pokemonDetails.name
+            ) === undefined ? (
+              <div
+                onClick={() => addToCart()}
+                className="add_button_pokemondetails"
+              >
+                add to cart
+              </div>
+            ) : (
+              <div
+                onClick={() => deleteFromCart()}
+                className="delete_button_pokemondetails"
+              >
+                remove from cart
+              </div>
+            )}
+          </div>
         </div>
-        <p>{pokemonDetails?.pokedexEntry}</p>
+        <div className="bottom_container_pokemondetails">
+          <p>description</p>
+          <p>{pokemonDetails?.pokedexEntry}</p>
+        </div>
+        <ul>
+          <li>Physics</li>
+          <li>height: {pokemonDetails?.height} m</li>
+          <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
+        </ul>
       </div>
-      <ul>
-        <li>Psyics</li>
-        <li>height: {pokemonDetails?.height} m</li>
-        <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
-      </ul>
-      <div>
-        <StatsList stats={pokemonDetails?.stats} />
-      </div>
-      <h3>{pokemonDetails?.price}</h3>
-      {cart.pokemon.find(
-        (cartPokemon) => cartPokemon.name === pokemonDetails.name
-      ) === undefined ? (
-        <div onClick={() => addToCart()} className="add_button_pokemondetails">
-          add to cart
-        </div>
-      ) : (
-        <div
-          onClick={() => deleteFromCart()}
-          className="delete_button_pokemondetails"
-        >
-          remove from cart
-        </div>
-      )}
     </div>
   );
 };

@@ -1,8 +1,15 @@
 import "./PageList.css";
 
-const Number = ({ currentPage, number }) => {
+const Number = ({ currentPage, number, setCurrentPage }) => {
   return (
-    <div className={currentPage === number ? "currentPage" : ""}>{number}</div>
+    <div
+      onClick={() => setCurrentPage(number)}
+      className={`${
+        currentPage === number ? "currentPage" : ""
+      } number_page_list`}
+    >
+      {number}
+    </div>
   );
 };
 

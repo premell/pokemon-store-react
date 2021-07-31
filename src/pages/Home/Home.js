@@ -141,6 +141,7 @@ const Home = () => {
         })
       ).then(() => {
         setPokemonsToDisplay(pokemons);
+        setIsLoading(false);
       });
     },
     [storedPokemonNames, storedPokemons]
@@ -174,6 +175,7 @@ const Home = () => {
   }, [typeFilters]);
 
   useEffect(() => {
+    setIsLoading(true);
     const filteredPokemons = [...typeFilteredPokemon];
 
     const filteredPokemonsByMinPrice = filteredPokemons.filter(
@@ -190,6 +192,7 @@ const Home = () => {
   }, [typeFilteredPokemon, priceFilters, searchValue]);
 
   useEffect(() => {
+    setIsLoading(true);
     const sortedPokemon = [...allFilteredPokemons];
 
     switch (sortingMethod) {
@@ -218,6 +221,7 @@ const Home = () => {
 
   // display pokemon
   useEffect(() => {
+    setIsLoading(true);
     const displayPokemon = async () => {
       console.log(pokemonsPerPage);
       const startPokemon = (currentPage - 1) * pokemonsPerPage;
@@ -236,6 +240,10 @@ const Home = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchValue, typeFilters, priceFilters]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
 
   const updateSortingMethod = (method) => {
     setSortingMethod(method);

@@ -1,3 +1,8 @@
+import "./PageList.css";
+
+import { IconContext } from "react-icons";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+
 import Number from "./Number";
 
 const setRange = (currentPage, maxPages) => {
@@ -30,22 +35,32 @@ const PageList = ({
     Math.ceil(numberOfPokemon / pokemonsPerPage)
   );
   return (
-    <div>
-      {currentPage !== 1 && (
-        <div onClick={() => setCurrentPage((currentPage) => currentPage - 1)}>
-          Left
+    <div className="page_main_container_page_list">
+      <IconContext.Provider
+        value={{
+          style: { color: "black", cursor: "pointer" },
+        }}
+      >
+        {currentPage !== 1 && (
+          <div onClick={() => setCurrentPage((currentPage) => currentPage - 1)}>
+            <IoIosArrowBack size={20} />
+          </div>
+        )}
+        <div className="page_container_page_list">
+          {range.map((number) => (
+            <Number
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              number={number}
+            />
+          ))}
         </div>
-      )}
-      <div>
-        {range.map((number) => (
-          <Number currentPage={currentPage} number={number} />
-        ))}
-      </div>
-      {!isLastPage && (
-        <div onClick={() => setCurrentPage((currentPage) => currentPage + 1)}>
-          Right
-        </div>
-      )}
+        {!isLastPage && (
+          <div onClick={() => setCurrentPage((currentPage) => currentPage + 1)}>
+            <IoIosArrowForward size={20} />
+          </div>
+        )}
+      </IconContext.Provider>
     </div>
   );
 };
