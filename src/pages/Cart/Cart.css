@@ -1,0 +1,65 @@
+.card_container_cart_card {
+  display: flex;
+  background-color: white;
+  border-bottom: 3px solid #f4f5f9;
+}
+
+.main_container_cart {
+  background-color: #f4f5f9;
+}
+.pokemon_container_cart {
+  margin: 2%;
+  width: 96%;
+  border-radius: 3px;
+}
+
+.card_container_cart_card {
+  display: flex;
+}
+.image_cart {
+  flex: 1;
+}
+.name_cart_card {
+  flex: 3;
+  font-weight: 501;
+  padding: 10px;
+  font-size: 15;
+}
+.price_cart_card {
+  flex: 1;
+}
+.remove_cart_card {
+  flex: 1;
+}
+
+.header_cart {
+  display: flex;
+}
+.header_image_cart {
+  flex: 1;
+}
+.header_name_cart {
+  flex: 3;
+}
+.header_price_cart {
+  flex: 1;
+}
+
+.header_title_cart {
+  margin-right: 0;
+  display: inline-block;
+  cursor: pointer;
+  font-weight: 501;
+  font-size: 15;
+}
+
+.header_remove_button_cart {
+  flex: 1;
+}
+
+.toggle_values_header {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}

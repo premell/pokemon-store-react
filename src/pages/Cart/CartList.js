@@ -1,10 +1,13 @@
 import CartCard from "./CartCard.js";
-const CartList = ({ cartPokemons }) => {
-  console.log(cartPokemons);
+const CartList = ({ cartPokemons, removePokemon }) => {
   return (
     <div>
       {cartPokemons.map((pokemon) => (
-        <CartCard key={pokemon.name} pokemon={pokemon} />
+        <CartCard
+          key={pokemon.name}
+          removePokemon={removePokemon}
+          pokemon={pokemon}
+        />
       ))}
     </div>
   );

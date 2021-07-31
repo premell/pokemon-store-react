@@ -146,6 +146,9 @@ const Home = () => {
     },
     [storedPokemonNames, storedPokemons]
   );
+  useEffect(() => {
+    setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+  }, []);
 
   useEffect(() => {
     const filterPokemonBasedOnType = async () => {

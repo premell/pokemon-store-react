@@ -13,7 +13,9 @@ const Navbar = () => {
 
   return (
     <div className={NavbarCss.main_container}>
-      <h3>Pokemon Trader</h3>
+      <Link to="/">
+        <h3>Pokemon Trader</h3>
+      </Link>
       <SearchBar />
       <Link to="/Cart">
         <IconContext.Provider

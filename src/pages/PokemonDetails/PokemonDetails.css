@@ -45,10 +45,14 @@
   padding: 4px;
   background-color: #00e64d;
   border-radius: 5px;
-  width: 90%;
+  width: 100%;
+  height: 50px;
   text-align: center;
   font-weight: bold;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .delete_button_pokemondetails {
@@ -57,10 +61,14 @@
   padding: 4px;
   background-color: #e64d00;
   border-radius: 5px;
-  width: 90%;
+  width: 100%;
+  height: 50px;
   text-align: center;
   font-weight: bold;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .add_button_pokemondetails :hover {
   background-color: #00b23b;
@@ -78,7 +86,20 @@
   width: 100%;
 }
 .bottom_container_pokemondetails {
+  background-color: #f4f5f9;
+  height: 100%;
   width: 100%;
+}
+.right_container_pokemondetails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 30%;
+}
+
+.name_pokemondetails {
+  width: 100%;
+  height: 30px;
 }
 
 .main_container_image_list {
@@ -106,6 +127,7 @@
 .small_image_image_list {
   width: 100px;
   height: 100px;
+  cursor: pointer;
 }
 
 .main_image_pokemondetails {
@@ -114,4 +136,13 @@
 }
 
 .details_container_pokemondetails {
+}
+
+.header_pokemondetails {
+  width: 100%;
+  font-size: 18px;
+}
+
+.abilities_pokemondetails {
+  margin-left: 15px;
 }

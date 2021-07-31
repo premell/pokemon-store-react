@@ -9,12 +9,18 @@ import { cart as cartAtom } from "../../atoms";
 import { popupMessage as popupMessageAtoms } from "../../atoms";
 import PopupMessage from "../../shared/PopupMessage/PopupMessage";
 import TypeFlair from "../../shared/TypeFlair/TypeFlair";
+import Navbar from "../../components/Navbar/Navbar";
 
 import ImageList from "./ImageList";
 import StatsList from "./StatsList";
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
 const imageListDefault = [{}];
+
+const formatNumberWithCommas = (number) => {
+  if (typeof number !== "number") return 0;
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
 const characterValues = {
   a: "1",
@@ -83,6 +89,9 @@ const PokemonDetails = () => {
   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
   const [currentImage, setCurrentImage] = useState("");
 
+  useEffect(() => {
+    setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+  }, []);
   useEffect(() => {
     const getPokemonDetails = async () => {
       setIsLoading(true);
@@ -201,6 +210,7 @@ const PokemonDetails = () => {
         message={popupMessage.message}
         type={popupMessage.type}
       />
+      <Navbar />
       <div className="pokemon_container_pokemondetails">
         <div className="top_container_pokemondetails">
           <ImageList
@@ -209,8 +219,8 @@ const PokemonDetails = () => {
             currentImage={currentImage}
           />
           <img className="main_image_pokemondetails" src={currentImage.url} />
-          <div className="left_container_pokemondetails">
-            <h3>
+          <div className="right_container_pokemondetails">
+            <h3 className="name_pokemondetails">
               {id} {toPokemonNumber(pokemonDetails?.order)}
             </h3>
             <div style={{ display: "flex" }}>
@@ -218,26 +228,34 @@ const PokemonDetails = () => {
                 <TypeFlair key={type.type.name} type={type.type.name} />
               ))}
             </div>
-            <p>abilities</p>
-            <ul>
-              {pokemonDetails?.abilities.map((ability) => {
-                if (ability.is_hidden === true) return;
-                return (
-                  <li key={ability.ability.name}>{ability.ability.name}</li>
-                );
-              })}
-              <li className="ability_divider">Hidden: </li>
-              {pokemonDetails?.abilities.map((ability) => {
-                if (ability.is_hidden === false) return;
-                return (
-                  <li key={ability.ability.name}>{ability.ability.name}</li>
-                );
-              })}
-            </ul>
+            <p className="header_pokemondetails">abilities</p>
+            {pokemonDetails?.abilities.map((ability) => {
+              if (ability.is_hidden === true) return;
+              return (
+                <p
+                  className="abilities_pokemondetails"
+                  key={ability.ability.name}
+                >
+                  {ability.ability.name}
+                </p>
+              );
+            })}
+            <p className="header_pokemondetails">hidden</p>
+            {pokemonDetails?.abilities.map((ability) => {
+              if (ability.is_hidden === false) return;
+              return (
+                <p
+                  className="abilities_pokemondetails"
+                  key={ability.ability.name}
+                >
+                  {ability.ability.name}
+                </p>
+              );
+            })}
             <div>
               <StatsList stats={pokemonDetails?.stats} />
             </div>
-            <h3>{pokemonDetails?.price}</h3>
+            <h3>$ {formatNumberWithCommas(pokemonDetails?.price)}</h3>
             {cart.pokemon.find(
               (cartPokemon) => cartPokemon.name === pokemonDetails.name
             ) === undefined ? (
@@ -258,14 +276,14 @@ const PokemonDetails = () => {
           </div>
         </div>
         <div className="bottom_container_pokemondetails">
-          <p>description</p>
+          <p className="header_pokemondetails">description</p>
           <p>{pokemonDetails?.pokedexEntry}</p>
+          <p className="header_pokemondetails">Physics</p>
+          <ul style={{ margin: 0, listStyle: "none" }}>
+            <li>height: {pokemonDetails?.height} m</li>
+            <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
+          </ul>
         </div>
-        <ul>
-          <li>Physics</li>
-          <li>height: {pokemonDetails?.height} m</li>
-          <li>weight: {moveDecimalPoint(pokemonDetails?.weight)} kg</li>
-        </ul>
       </div>
     </div>
   );
