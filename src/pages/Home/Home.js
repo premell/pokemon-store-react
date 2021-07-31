@@ -108,7 +108,7 @@ const Home = () => {
     max: 2500,
   });
   const [sortingMethod, setSortingMethod] = useState(
-    SORTING_METHODS.PRICE_LOWEST_FIRST
+    SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
   );
 
   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
@@ -121,7 +121,6 @@ const Home = () => {
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
       const pokemons = [];
-
       Promise.all(
         refrencePokemons.map(async (pokemon) => {
           const pokemonName = pokemon.name;
@@ -217,6 +216,7 @@ const Home = () => {
         break;
       default:
     }
+    console.log(sortedPokemon);
     setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
 
@@ -237,9 +237,13 @@ const Home = () => {
     displayPokemon();
   }, [allSortedPokemons]);
 
-  const addType = () => {
-    setTypesToFilter((typesToFilter) => [...typesToFilter, "water"]);
+  const updateSortingMethod = (method) => {
+    setSortingMethod(method);
   };
+
+  useEffect(() => {
+    console.log(sortingMethod);
+  }, [sortingMethod]);
 
   return (
     <main>
@@ -254,12 +258,15 @@ const Home = () => {
           setPricesToFilter={setPricesToFilter}
           setTypesToFilter={setTypesToFilter}
         />
-        <ListOfFilters
-          allSortedPokemons={allSortedPokemons}
-          typeFilters={typesToFilter}
-          priceFilters={pricesToFilter}
-        />
-        <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
+        <div>
+          <ListOfFilters
+            typeFilters={typesToFilter}
+            priceFilters={pricesToFilter}
+            updateSortingMethod={updateSortingMethod}
+            numberOfPokemon={allSortedPokemons.length}
+          />
+          <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
+        </div>
       </div>
     </main>
   );
