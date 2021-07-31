@@ -2,6 +2,7 @@ import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
+import PageNavigation from "../../components/PageList/PageList";
 import { pokemons as pokemonAtoms } from "../../atoms";
 import { searchValue as searchValueAtoms } from "../../atoms";
 import Navbar from "../../components/Navbar/Navbar";
@@ -89,6 +90,7 @@ const getAllPokemons = async () => {
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pokemonsPerPage, setPokemonsPerPage] = useState(20);
+  const [isLastPage, setIsLastPage] = useState(false);
 
   const [typeFilteredPokemon, setTypeFilteredPokemon] = useState([]);
   const [allFilteredPokemons, setAllFilteredPokemons] = useState([]);
@@ -102,8 +104,8 @@ const Home = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [typesToFilter, setTypesToFilter] = useState([]);
-  const [pricesToFilter, setPricesToFilter] = useState({
+  const [typeFilters, setTypeFilters] = useState([]);
+  const [priceFilters, setPriceFilters] = useState({
     min: 0,
     max: 2500,
   });
@@ -112,11 +114,6 @@ const Home = () => {
   );
 
   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
-
-  useEffect(() => {
-    console.log(storedPokemonNames);
-    console.log(storedPokemons);
-  }, [storedPokemonNames, storedPokemons]);
 
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
@@ -154,7 +151,7 @@ const Home = () => {
       setIsLoading(true);
       let typeFilteredPokemon = await getAllPokemons();
 
-      for (const type of typesToFilter) {
+      for (const type of typeFilters) {
         const data = await fetchData(`${BASE_URL}type/${type}`);
 
         const allPokemonOfType = Object.values(flattenObject(data.pokemon));
@@ -174,23 +171,23 @@ const Home = () => {
       setIsLoading(false);
     };
     filterPokemonBasedOnType();
-  }, [typesToFilter]);
+  }, [typeFilters]);
 
   useEffect(() => {
     const filteredPokemons = [...typeFilteredPokemon];
 
     const filteredPokemonsByMinPrice = filteredPokemons.filter(
-      (pokemon) => pokemon.price >= pricesToFilter.min
+      (pokemon) => pokemon.price >= priceFilters.min
     );
     const filteredPokemonsByMaxPrice = filteredPokemonsByMinPrice.filter(
-      (pokemon) => pokemon.price <= pricesToFilter.max
+      (pokemon) => pokemon.price <= priceFilters.max
     );
     const filteredPokemonsBySearchQuery = filteredPokemonsByMaxPrice.filter(
       (pokemon) => pokemon.name.includes(searchValue)
     );
 
     setAllFilteredPokemons(filteredPokemonsBySearchQuery);
-  }, [typeFilteredPokemon, pricesToFilter, searchValue]);
+  }, [typeFilteredPokemon, priceFilters, searchValue]);
 
   useEffect(() => {
     const sortedPokemon = [...allFilteredPokemons];
@@ -216,34 +213,33 @@ const Home = () => {
         break;
       default:
     }
-    console.log(sortedPokemon);
     setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
 
   // display pokemon
   useEffect(() => {
     const displayPokemon = async () => {
+      console.log(pokemonsPerPage);
       const startPokemon = (currentPage - 1) * pokemonsPerPage;
       const endPokemon = currentPage * pokemonsPerPage;
+      if (endPokemon >= allSortedPokemons.length) setIsLastPage(true);
+      else setIsLastPage(false);
       const pokemonToDisplay = [...allSortedPokemons].slice(
         startPokemon,
         endPokemon
       );
       setPokemonObjectsToDisplay(pokemonToDisplay);
-      // const pokemons = await setPokemonObjectsToDisplay(pokemonToDisplay);
-      // console.log(pokemons);
-      // setPokemonsToDisplay(pokemons);
     };
     displayPokemon();
-  }, [allSortedPokemons]);
+  }, [allSortedPokemons, pokemonsPerPage, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchValue, typeFilters, priceFilters]);
 
   const updateSortingMethod = (method) => {
     setSortingMethod(method);
   };
-
-  useEffect(() => {
-    console.log(sortingMethod);
-  }, [sortingMethod]);
 
   return (
     <main>
@@ -255,17 +251,29 @@ const Home = () => {
       <Navbar />
       <div className={HomeCss.main_container}>
         <SidePanelFilters
-          setPricesToFilter={setPricesToFilter}
-          setTypesToFilter={setTypesToFilter}
+          setPriceFilters={setPriceFilters}
+          setTypeFilters={setTypeFilters}
+          typeFilters={typeFilters}
+          priceFilters={priceFilters}
         />
         <div>
           <ListOfFilters
-            typeFilters={typesToFilter}
-            priceFilters={pricesToFilter}
+            typeFilters={typeFilters}
+            priceFilters={priceFilters}
             updateSortingMethod={updateSortingMethod}
             numberOfPokemon={allSortedPokemons.length}
+            setTypeFilters={setTypeFilters}
+            setPriceFilters={setPriceFilters}
+            setPokemonsPerPage={setPokemonsPerPage}
           />
           <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
+          <PageNavigation
+            pokemonsPerPage={pokemonsPerPage}
+            numberOfPokemon={allSortedPokemons.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            isLastPage={isLastPage}
+          />
         </div>
       </div>
     </main>

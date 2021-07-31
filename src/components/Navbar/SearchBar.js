@@ -29,7 +29,7 @@ const SearchBar = () => {
   useEffect(() => {
     const timeId = setTimeout(() => {
       setSearchValue(temporarySearchValue);
-    }, 400);
+    }, 250);
     return () => {
       clearTimeout(timeId);
     };

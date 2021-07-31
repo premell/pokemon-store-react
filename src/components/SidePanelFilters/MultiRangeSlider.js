@@ -8,7 +8,7 @@ import React, {
 
 import MultiRangeSliderCss from "./MultiRangeSlider.module.css";
 
-const MultiRangeSlider = ({ min, max, onChange }) => {
+const MultiRangeSlider = ({ min, max, onChange, currentPriceFilter }) => {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
   const minValRef = useRef(min);
@@ -88,8 +88,14 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
     };
   }, [minVal, maxVal]);
 
+  useEffect(() => {
+    setMinVal(currentPriceFilter.min);
+    setMaxVal(currentPriceFilter.max);
+  }, [currentPriceFilter]);
+
   return (
     <div>
+      <p className={MultiRangeSliderCss.header}>Price</p>
       <div className={MultiRangeSliderCss.container}>
         <input
           type="range"
@@ -125,8 +131,19 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
           <div ref={range} className={MultiRangeSliderCss.slider_range}></div>
         </div>
       </div>
-      <input onChange={handleMinChange} value={minVal} />
-      <input onChange={handleMaxChange} value={maxVal} />
+      <div style={{ marginTop: "14px" }}>
+        <input
+          className={MultiRangeSliderCss.text_input}
+          onChange={handleMinChange}
+          value={minVal}
+        />
+        <p style={{ display: "inline-block" }}>-</p>
+        <input
+          className={MultiRangeSliderCss.text_input}
+          onChange={handleMaxChange}
+          value={maxVal}
+        />
+      </div>
     </div>
   );
 };

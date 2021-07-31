@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./ListOfFilters.css";
+import { RiArrowDropDownLine } from "react-icons/ri";
 
-const DropDown = ({ items, defaultSelected, handleNewItem }) => {
+import { useDetectClickOutside } from "react-detect-click-outside";
+
+const DropDown = ({ items, defaultSelected, handleNewItem, type }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentlySelected, setCurrentlySelected] = useState(
     defaultSelected ?? ""
@@ -12,14 +15,23 @@ const DropDown = ({ items, defaultSelected, handleNewItem }) => {
     setCurrentlySelected(item);
     setIsOpen(false);
   };
+  const formatText = () => {
+    if (type === "page") return currentlySelected.label + " per page";
+    else if (type === "sorting") return "sorting by " + currentlySelected.label;
+  };
+
+  const ref = useDetectClickOutside({ onTriggered: () => setIsOpen(false) });
 
   return (
-    <div className="main_dropdown_container_dropdown">
+    <div className="main_dropdown_container_dropdown" ref={ref}>
       <div
         className="header_dropdown"
         onClick={() => setIsOpen((isOpen) => !isOpen)}
       >
-        sorting by {currentlySelected.label}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {formatText()}
+          <RiArrowDropDownLine size={20} />
+        </div>
       </div>
       {isOpen && (
         <div className="dropdownlist_dropdown">
@@ -36,4 +48,5 @@ const DropDown = ({ items, defaultSelected, handleNewItem }) => {
     </div>
   );
 };
+
 export default DropDown;

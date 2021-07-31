@@ -3,6 +3,7 @@
   border-radius: 10px;
   margin: 5px;
   width: 300px;
+  height: 330px;
   padding: 5px;
   padding-top: 20px;
   display: flex;
@@ -37,6 +38,7 @@ h3 {
   background-color: #00e64d;
   border-radius: 5px;
   width: 90%;
+  height: 23px;
   text-align: center;
   font-weight: bold;
   color: white;
@@ -48,6 +50,7 @@ h3 {
   padding: 4px;
   background-color: #e64d00;
   border-radius: 5px;
+  height: 23px;
   width: 90%;
   text-align: center;
   font-weight: bold;
@@ -65,6 +68,7 @@ img {
   width: 150px;
   height: 150px;
   transition: transform 0.2s;
+  z-index: 3;
 }
 
 .clickable_container:hover img {
