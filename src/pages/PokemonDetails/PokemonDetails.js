@@ -228,7 +228,7 @@ const PokemonDetails = () => {
             })}
           </ul>
         </div>
-        <p>{pokemonDetails.pokedexEntry}</p>
+        <p>{pokemonDetails?.pokedexEntry}</p>
       </div>
       <ul>
         <li>Psyics</li>
@@ -252,7 +252,7 @@ const PokemonDetails = () => {
         >
           remove from cart
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };

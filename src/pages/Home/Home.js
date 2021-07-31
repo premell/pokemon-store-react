@@ -10,6 +10,8 @@ import SidePanelFilters from "../../components/SidePanelFilters/SidePanelFilters
 import ALL_TYPES from "../../utils/ALL_TYPES.js";
 import flattenObject from "../../utils/flattenObject";
 
+import ListOfFilters from "../../components/ListOfFilters/ListOfFilters";
+
 import HomeCss from "./Home.module.css";
 import { popupMessage as popupMessageAtoms } from "../../atoms";
 import PopupMessage from "../../shared/PopupMessage/PopupMessage";
@@ -115,34 +117,6 @@ const Home = () => {
     console.log(storedPokemonNames);
     console.log(storedPokemons);
   }, [storedPokemonNames, storedPokemons]);
-
-  // const setPokemonObjectsToDisplay = useCallback(
-  //   async (refrencePokemons) => {
-  //      console.log("exectued")
-  //     const pokemons = [];
-  //     for (const pokemon of refrencePokemons) {
-  //       const pokemonName = pokemon.name;
-  //       if (storedPokemonNames.includes(pokemonName)) {
-  //         const newPokemon = storedPokemons.find(
-  //           (pokemon) => pokemon.name === pokemonName
-  //         );
-  //         pokemons.push(newPokemon);
-  //       } else {
-  //         const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
-  //         const newPokemon = {
-  //           name: pokemonName,
-  //           types: data2.types,
-  //           image: data2.sprites.front_default,
-  //           price: pokemon.price,
-  //         };
-  //         storedPokemons.push(newPokemon);
-  //         pokemons.push(newPokemon);
-  //       }
-  //     }
-  //     return pokemons;
-  //   },
-  //   [storedPokemonNames, storedPokemons]
-  // );
 
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
@@ -279,6 +253,11 @@ const Home = () => {
         <SidePanelFilters
           setPricesToFilter={setPricesToFilter}
           setTypesToFilter={setTypesToFilter}
+        />
+        <ListOfFilters
+          allSortedPokemons={allSortedPokemons}
+          typeFilters={typesToFilter}
+          priceFilters={pricesToFilter}
         />
         <PokemonList isLoading={isLoading} pokemons={pokemonToDisplay} />
       </div>
