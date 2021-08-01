@@ -1,4 +1,4 @@
-.main_container {
+.main_container_pokemon_list {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -8,7 +8,7 @@
 }
 
 @media (max-width: 500px) {
-  .main_container {
+  .main_container_pokemon_list {
     justify-content: center;
   }
 }
@@ -25,4 +25,14 @@
   flex-wrap: wrap;
   justify-content: center;
   background-color: #d8d8d8;
+}
+
+.no_pokemons {
+  height: 365px;
+  display: flex;
+  justify-content: center;
+  padding-top: 10%;
+  font-weight: 601;
+  font-size: 20px;
+  box-sizing: border-box;
 }

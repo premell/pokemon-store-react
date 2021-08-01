@@ -26,28 +26,7 @@ export const popupMessage = atom({
 export const cart = atom({
   key: "cart",
   default: {
-    pokemon: [
-      {
-        image:
-          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
-        name: "abra",
-        price: 20,
-      },
-
-      {
-        image:
-          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
-        name: "abrasdfa",
-        price: 20,
-      },
-
-      {
-        image:
-          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
-        name: "a1kkkbra",
-        price: 20,
-      },
-    ],
+    pokemon: [],
     total: 0,
   },
 });

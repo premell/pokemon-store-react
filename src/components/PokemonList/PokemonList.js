@@ -100,11 +100,7 @@ const PokemonList = ({
   const [skeletons, setSkeletons] = useState([]);
 
   useEffect(() => {
-    const localSkeletons = [];
-    for (let i = 1; i <= pokemonsPerPage; i++) {
-      localSkeletons.push(i);
-    }
-    setSkeletons(localSkeletons);
+    setNumberOfSkeletons(pokemonsPerPage);
   }, [pokemonsPerPage]);
 
   const setPokemonObjectsToDisplay = useCallback(
@@ -228,6 +224,7 @@ const PokemonList = ({
         startPokemon,
         endPokemon
       );
+      setNumberOfSkeletons(pokemonToDisplay.length);
       setPokemonObjectsToDisplay(pokemonToDisplay);
     };
     displayPokemon();
@@ -245,15 +242,21 @@ const PokemonList = ({
     console.log(typeFilters);
   }, [typeFilters]);
 
+  const setNumberOfSkeletons = (number) => {
+    const localSkeletons = [];
+    for (let i = 1; i <= number; i++) {
+      localSkeletons.push(i);
+    }
+    setSkeletons(localSkeletons);
+  };
+
   if (pokemonToDisplay.length === 0) {
     return (
-      <div className={PokemonListCss.main_container}>
-        <p>No Pokemon were found</p>
-      </div>
+      <div className={PokemonListCss.no_pokemons}>No Pokemon were found</div>
     );
   } else {
     return (
-      <div className={PokemonListCss.main_container}>
+      <div className={PokemonListCss.main_container_pokemon_list}>
         {isLoading
           ? skeletons.map((skeleton) => (
               <div className={PokemonListCss.skeleton_container}></div>
