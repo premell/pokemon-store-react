@@ -1,6 +1,7 @@
 import PokemonCard from "./PokemonCard";
 import PokemonListCss from "./PokemonList.module.css";
 
+import Skeleton from "@material-ui/lab/Skeleton";
 import { searchValue as searchValueAtoms } from "../../atoms";
 import { useRecoilState } from "recoil";
 import { useCallback, useEffect, useState } from "react";
@@ -95,6 +96,16 @@ const PokemonList = ({
   const [pokemonToDisplay, setPokemonsToDisplay] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchValue, setSearchValue] = useRecoilState(searchValueAtoms);
+
+  const [skeletons, setSkeletons] = useState([]);
+
+  useEffect(() => {
+    const localSkeletons = [];
+    for (let i = 1; i <= pokemonsPerPage; i++) {
+      localSkeletons.push(i);
+    }
+    setSkeletons(localSkeletons);
+  }, [pokemonsPerPage]);
 
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
@@ -228,15 +239,13 @@ const PokemonList = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [currentPage]);
+  }, [currentPage, pokemonToDisplay]);
 
-  if (isLoading) {
-    return (
-      <div className={PokemonListCss.main_container}>
-        <p>IS LOADING</p>
-      </div>
-    );
-  } else if (pokemonToDisplay.length === 0) {
+  useEffect(() => {
+    console.log(typeFilters);
+  }, [typeFilters]);
+
+  if (pokemonToDisplay.length === 0) {
     return (
       <div className={PokemonListCss.main_container}>
         <p>No Pokemon were found</p>
@@ -245,9 +254,13 @@ const PokemonList = ({
   } else {
     return (
       <div className={PokemonListCss.main_container}>
-        {pokemonToDisplay.map((pokemon) => (
-          <PokemonCard key={pokemon.name} pokemon={pokemon} />
-        ))}
+        {isLoading
+          ? skeletons.map((skeleton) => (
+              <div className={PokemonListCss.skeleton_container}></div>
+            ))
+          : pokemonToDisplay.map((pokemon) => (
+              <PokemonCard key={pokemon.name} pokemon={pokemon} />
+            ))}
       </div>
     );
   }
