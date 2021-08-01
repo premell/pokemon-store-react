@@ -25,14 +25,17 @@ const setRange = (currentPage, maxPages) => {
 const PageList = ({
   currentPage,
   setCurrentPage,
-  isLastPage,
   pokemonsPerPage,
-  numberOfPokemon,
+  numberOfMatchedPokemon,
 }) => {
   const range = setRange(
     currentPage,
-    Math.ceil(numberOfPokemon / pokemonsPerPage)
+    Math.ceil(numberOfMatchedPokemon / pokemonsPerPage)
   );
+
+  const isLastPage =
+    Math.ceil(numberOfMatchedPokemon / pokemonsPerPage) <= currentPage;
+
   return (
     <div className="page_main_container_page_list">
       <IconContext.Provider

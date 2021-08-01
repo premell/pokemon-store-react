@@ -5,11 +5,12 @@
   align-items: center;
   background-color: #111111;
   margin-top: 20px;
-  margin-bottom: 30px;
   height: 200px;
   width: 100%;
   color: white;
   padding-top: 30px;
+  position: absolute;
+  top: calc(100% - 200px);
 }
 
 .main_text_footer {

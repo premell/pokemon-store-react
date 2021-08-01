@@ -98,15 +98,15 @@ const PokemonList = ({
 
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
-      const pokemons = [];
+      const pokemonObjects = [];
       Promise.all(
-        refrencePokemons.map(async (pokemon) => {
+        refrencePokemons.map(async (pokemon, index) => {
           const pokemonName = pokemon.name;
           if (storedPokemonNames.includes(pokemonName)) {
             const newPokemon = storedPokemons.find(
               (pokemon) => pokemon.name === pokemonName
             );
-            pokemons.push(newPokemon);
+            pokemonObjects[index] = newPokemon;
           } else {
             const data2 = await fetchData(`${BASE_URL}pokemon/${pokemonName}`);
             const newPokemon = {
@@ -117,12 +117,11 @@ const PokemonList = ({
             };
             storedPokemons.push(newPokemon);
             storedPokemonNames.push(pokemonName);
-            pokemons.push(newPokemon);
+            pokemonObjects[index] = newPokemon;
           }
         })
       ).then(() => {
-        console.log(pokemons);
-        setPokemonsToDisplay(pokemons);
+        setPokemonsToDisplay(pokemonObjects);
         setIsLoading(false);
       });
     },
@@ -182,9 +181,6 @@ const PokemonList = ({
     setIsLoading(true);
     const sortedPokemon = [...allFilteredPokemons];
 
-    console.log(sortedPokemon.slice(0, 20));
-    console.log(sortingMethod);
-
     switch (sortingMethod) {
       case SORTING_METHODS.ALPHABETICALLY_A_FIRST:
         sortedPokemon.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -206,7 +202,6 @@ const PokemonList = ({
         break;
       default:
     }
-    console.log(sortedPokemon);
     setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
 

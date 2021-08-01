@@ -1,4 +1,6 @@
 .main_container {
   display: flex;
   background-color: #f4f5f9;
+  height: 100%;
+  margin-bottom: 200px;
 }

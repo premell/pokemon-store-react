@@ -24,7 +24,6 @@ const PokemonContainer = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pokemonsPerPage, setPokemonsPerPage] = useState(20);
-  const [isLastPage, setIsLastPage] = useState(false);
 
   const [sortingMethod, setSortingMethod] = useState(
     SORTING_METHODS.RELEASE_DATE_OLDEST_FIRST
@@ -33,6 +32,8 @@ const PokemonContainer = ({
   const updateNumberOfMatchedPokemon = (currentNumber, newNumber) => {
     if (currentNumber !== newNumber) setNumberOfMatchedPokemon(newNumber);
   };
+
+  useEffect(() => {}, [pokemonsPerPage]);
 
   return (
     <div className={PokemonContainerCss.main_container}>
@@ -62,7 +63,6 @@ const PokemonContainer = ({
         numberOfMatchedPokemon={numberOfMatchedPokemon}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        isLastPage={isLastPage}
       />
     </div>
   );

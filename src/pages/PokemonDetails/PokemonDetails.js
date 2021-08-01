@@ -100,11 +100,10 @@ const PokemonDetails = () => {
       imageListDefault.splice(0, imageListDefault.length);
       const res = await fetch(`${BASE_URL}${id}`);
       pokemonDetails = await res.json();
-      console.log(pokemonDetails.order);
+      console.log(pokemonDetails);
+      console.log(pokemonDetails.id);
 
-      const res2 = await fetch(
-        `https://pokeapi.co/api/v2/pokemon-species/${pokemonDetails.id}`
-      );
+      const res2 = await fetch(pokemonDetails.species.url);
       const data = await res2.json();
       for (const entry of data.flavor_text_entries) {
         if (entry.language.name === "en") {

@@ -15,10 +15,10 @@ const TypeFilterList = ({ handleClick, typeFilters }) => {
         <div key={type} className={TypeFilterListCss.flair_container}>
           <input
             type="checkbox"
-            onClick={handleClick}
+            onChange={handleClick}
             id={type}
             className={TypeFilterListCss.test_check_box}
-            defaultChecked={typeFilters?.includes(type)}
+            checked={typeFilters?.includes(type)}
           />
           <p>{type}</p>
         </div>
@@ -31,7 +31,7 @@ const TypeFilterList = ({ handleClick, typeFilters }) => {
         <div class={TypeFilterListCss.flair_container}>
           <input
             type="checkbox"
-            onClick={handleClick}
+            onChange={handleClick}
             id={type}
             class={TypeFilterListCss.check_box}
             checked={typeFilters?.includes(type)}

@@ -37,6 +37,7 @@ const DropDown = ({ items, defaultSelected, handleNewItem, type }) => {
         <div className="dropdownlist_dropdown">
           {items.map((item) => (
             <div
+              key={item.label}
               className="dropdownitem_dropdown"
               onClick={() => selectItem(item)}
             >
