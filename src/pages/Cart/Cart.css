@@ -6,6 +6,7 @@
 
 .main_container_cart {
   position: absolute;
+  height: 100%;
   top: 0;
   left: 0;
   width: 100%;
@@ -27,16 +28,17 @@
 .name_cart_card {
   flex: 3;
   font-weight: 501;
-  padding: 10px;
+  padding-top: 15px;
   font-size: 15;
 }
 .price_cart_card {
+  padding-top: 15px;
   flex: 1;
 }
 .remove_cart_card {
+  padding-top: 15px;
   flex: 1;
 }
-
 .header_cart {
   display: flex;
 }
@@ -54,7 +56,7 @@
   margin-right: 0;
   display: inline-block;
   cursor: pointer;
-  font-weight: 501;
+  font-weight: 601;
   font-size: 15;
 }
 
@@ -70,4 +72,52 @@
 }
 
 .empty_message_cart_list {
+}
+
+.checkout_price_cart {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-left: 67%;
+}
+
+.checkout_price_cart p {
+  font-weight: 601;
+  font-size: 20px;
+  display: inline-block;
+}
+
+.proceed_button_cart {
+  display: flex;
+  padding: 6px;
+  margin-left: 10px;
+  background-color: #00e64d;
+  border-radius: 5px;
+  width: 15%;
+  height: 23px;
+  justify-content: center;
+  text-align: center;
+  font-weight: 601;
+  color: white;
+}
+
+.proceed_button_cart:hover {
+  background-color: gray;
+}
+
+.bin_icon_cart {
+  cursor: pointer;
+}
+
+.bin_icon_cart:hover {
+  color: #3584e4;
+}
+
+.empty_message_cart_list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 601;
+  font-size: 20px;
+  margin-top: 40px;
 }

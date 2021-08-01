@@ -1,30 +1,30 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
+import { useLocation } from "react-router";
+import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import SelectSearch from "react-select-search";
 import { useRecoilState } from "recoil";
 
 import { allPokemonNames as allPokemonNamesAtoms } from "../../atoms";
 import { searchValue as searchValueAtoms } from "../../atoms";
+import { recentlyRedirectedBecauseTyping as recentlyRedirectedBecauseTypingAtoms } from "../../atoms";
 
 import NavbarCss from "./Navbar.module.css";
-import { IconContext } from "react-icons";
 
+let recentlyRedirected = false;
 const SearchBar = () => {
   const [searchValue, setSearchValue] = useRecoilState(searchValueAtoms);
-  const [temporarySearchValue, setTemporarySearchValue] = useState("");
+  const [temporarySearchValue, setTemporarySearchValue] = useState(
+    searchValue ?? ""
+  );
+
+  const [hasBeenEdited, setHasBeenEdited] = useState(false);
 
   const input = useRef(null);
-
-  function debounce(callback, wait) {
-    let timerId;
-    return (...args) => {
-      clearTimeout(timerId);
-      timerId = setTimeout(() => {
-        callback(...args);
-      }, wait);
-    };
-  }
+  const location = useLocation();
+  const history = useHistory();
 
   useEffect(() => {
     const timeId = setTimeout(() => {
@@ -35,17 +35,43 @@ const SearchBar = () => {
     };
   }, [temporarySearchValue]);
 
-  const focusInput = () => {
-    input.current.focus();
+  useEffect(() => {
+    setHasBeenEdited(false);
+    if (location.pathname === "/" && recentlyRedirected) {
+      setTemporarySearchValue(searchValue);
+      recentlyRedirected = false;
+      input.current.focus();
+    } else if (location.pathname !== "/") {
+      setTemporarySearchValue("");
+      setSearchValue("");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (location.pathname !== "/" && hasBeenEdited) {
+      recentlyRedirected = true;
+      history.push("/");
+    }
+  }, [searchValue]);
+
+  const focusInput = () => input.current.focus();
+
+  const handleChange = (e) => {
+    setHasBeenEdited(true);
+    setTemporarySearchValue(e.target.value);
   };
 
   return (
-    <IconContext.Provider value={{ style: { cursor: "pointer" } }}>
+    <IconContext.Provider
+      value={{
+        style: { cursor: "pointer" },
+      }}
+    >
       <div className={NavbarCss.searchbar}>
         <input
           ref={input}
           value={temporarySearchValue}
-          onChange={(e) => setTemporarySearchValue(e.target.value)}
+          onChange={handleChange}
         />
         <BiSearch size={25} onClick={focusInput} />
       </div>

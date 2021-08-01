@@ -3,6 +3,8 @@ import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
+import MyLinks from "../../shared/MyLinks/MyLinks";
+
 import { cart as cartAtom } from "../../atoms";
 
 import NavbarCss from "./Navbar.module.css";
@@ -29,6 +31,9 @@ const Navbar = () => {
           </div>
         </IconContext.Provider>
       </Link>
+      <div className={NavbarCss.links}>
+        <MyLinks size={35} />
+      </div>
     </div>
   );
 };

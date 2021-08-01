@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import "./MyLinks.css";
 
 const goToWebsite = (url) => (window.location.href = url);
-const MyLinks = () => {
+const MyLinks = ({ size = 30 }) => {
   return (
     <div className="main_container_my_links">
       <IconContext.Provider
@@ -17,7 +17,7 @@ const MyLinks = () => {
           className="container_my_links"
           onClick={() => goToWebsite("https://github.com/premell")}
         >
-          <AiFillGithub size={30} />
+          <AiFillGithub size={size} />
         </div>
         <div
           className="container_my_links"
@@ -27,7 +27,7 @@ const MyLinks = () => {
             )
           }
         >
-          <AiFillLinkedin size={30} />
+          <AiFillLinkedin size={size} />
         </div>
       </IconContext.Provider>
     </div>

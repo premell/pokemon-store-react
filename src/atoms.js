@@ -9,6 +9,11 @@ const consoleLog = (value) => console.log(value);
 
 export const searchValue = atom({ key: "searchValue", default: "" });
 
+export const recentlyRedirectedBecauseTyping = atom({
+  key: "recentlyRedirectedBecauseTyping ",
+  default: false,
+});
+
 export const popupMessage = atom({
   key: "popupMessage",
   default: {

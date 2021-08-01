@@ -9,7 +9,7 @@ import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
 import PokemonCardCss from "./PokemonCard.module.css";
 
-const PokemonCard = ({ pokemon, index }) => {
+const PokemonCard = ({ pokemon }) => {
   const { name, image, price, types } = pokemon;
   const [cart, setCart] = useRecoilState(cartAtom);
 
@@ -58,7 +58,6 @@ const PokemonCard = ({ pokemon, index }) => {
 
   return (
     <div className={PokemonCardCss.container}>
-      <div>{index}</div>
       <Link
         className={PokemonCardCss.clickable_container}
         to={{

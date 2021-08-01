@@ -1,23 +1,28 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import Home from "./pages/Home/Home";
-import Cart from "./pages/Cart/Cart";
-import PokemonDetails from "./pages/PokemonDetails/PokemonDetails";
-
 import "./index.css";
 
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
+import React from "react";
+import { useEffect } from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { RecoilRoot } from "recoil";
+import OnRouteChange from "./utils/OnRouteChange";
+
+import Cart from "./pages/Cart/Cart";
+import Home from "./pages/Home/Home";
+import PokemonDetails from "./pages/PokemonDetails/PokemonDetails";
 
 const Routing = () => {
   return (
     <Router>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/pokemon/:id" component={PokemonDetails} />
-        <Route path="/cart" component={Cart} />
-      </Switch>
+      <OnRouteChange>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/pokemon/:id" component={PokemonDetails} />
+          <Route path="/cart" component={Cart} />
+        </Switch>
+      </OnRouteChange>
     </Router>
   );
 };

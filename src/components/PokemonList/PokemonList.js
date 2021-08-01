@@ -245,8 +245,8 @@ const PokemonList = ({
   } else {
     return (
       <div className={PokemonListCss.main_container}>
-        {pokemonToDisplay.map((pokemon, index) => (
-          <PokemonCard key={pokemon.name} index={index} pokemon={pokemon} />
+        {pokemonToDisplay.map((pokemon) => (
+          <PokemonCard key={pokemon.name} pokemon={pokemon} />
         ))}
       </div>
     );

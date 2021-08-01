@@ -68,3 +68,11 @@ h3 {
   font-size: 17px;
   color: black;
 }
+
+.links {
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
+  margin-right: 20px;
+  flex: 3;
+}
