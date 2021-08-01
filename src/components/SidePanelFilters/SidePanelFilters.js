@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState, useCallback } from "react";
 
 import MultiRangeSlider from "./MultiRangeSlider";
 import SidePanelFiltersCss from "./SidePanelFiltersCss.module.css";
@@ -10,13 +10,10 @@ const SidePanelFilters = ({
   priceFilters,
   typeFilters,
 }) => {
-  //console.log(typeFilters);
-  //const [localTypeFilters, setLocalTypeFilters] = useState(typeFilters ?? []);
   const [initialLoad, setInitialLoad] = useState(true);
 
   const handleTypeClick = (e) => {
     const newType = e.target.id;
-    console.log("HELLO");
     if (e.target.checked === true) {
       //setLocalTypeFilters([...localTypeFilters, newType]);
       setTypeFilters([...typeFilters, newType]);
@@ -34,8 +31,6 @@ const SidePanelFilters = ({
         //onChange={({ min, max }) => setPriceFilters({ min, max })}
         currentPriceFilter={priceFilters}
         onChange={({ min, max }) => {
-          console.log(min);
-          console.log(max);
           setPriceFilters({ min, max });
         }}
       />
@@ -44,4 +39,4 @@ const SidePanelFilters = ({
   );
 };
 
-export default memo(SidePanelFilters);
+export default SidePanelFilters;

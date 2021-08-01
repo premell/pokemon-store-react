@@ -9,21 +9,21 @@ const sortingMethods = [
   { value: "RELEASE_DATE_OLDEST_FIRST", label: "oldest" },
 ];
 const formatNumber = (number) => {
-  if (number > 100) return "100+";
-  else if (number > 200) return "200+";
-  else if (number > 300) return "300+";
-  else if (number > 400) return "400+";
-  else if (number > 500) return "500+";
-  else if (number > 600) return "600+";
-  else if (number > 700) return "700+";
-  else if (number > 800) return "800+";
+  if (number > 1000) return "1000+";
   else if (number > 900) return "900+";
-  else if (number > 1000) return "1000+";
-  else return number + "+";
+  else if (number > 800) return "800+";
+  else if (number > 700) return "700+";
+  else if (number > 600) return "600+";
+  else if (number > 500) return "500+";
+  else if (number > 400) return "400+";
+  else if (number > 300) return "300+";
+  else if (number > 200) return "200+";
+  else if (number > 100) return "100+";
+  else return number + "";
 };
 
 const ListOfFilters = ({
-  numberOfPokemon,
+  numberOfMatchedPokemon,
   typeFilters,
   priceFilters = {
     min: 0,
@@ -53,7 +53,7 @@ const ListOfFilters = ({
     <div className="main_container_list_of_filters">
       <div className="upper_container_list_of_filters">
         <p className="amount_container_list_of_filters">
-          {formatNumber(numberOfPokemon)} pokemons
+          {formatNumber(numberOfMatchedPokemon)} pokemons
         </p>
         <div className="dropdown_container_list_of_filters">
           <DropDown

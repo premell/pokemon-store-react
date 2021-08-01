@@ -9,7 +9,7 @@ import TypeFlair from "../../shared/TypeFlair/TypeFlair";
 
 import PokemonCardCss from "./PokemonCard.module.css";
 
-const PokemonCard = ({ pokemon }) => {
+const PokemonCard = ({ pokemon, index }) => {
   const { name, image, price, types } = pokemon;
   const [cart, setCart] = useRecoilState(cartAtom);
 
@@ -46,17 +46,19 @@ const PokemonCard = ({ pokemon }) => {
   };
 
   useEffect(() => {
-    const timeId = setTimeout(() => {
-      setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
-    }, 3000);
-
-    return () => {
-      clearTimeout(timeId);
-    };
+    if (popupMessage.show === true) {
+      const timeId = setTimeout(() => {
+        setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
+      }, 3000);
+      return () => {
+        clearTimeout(timeId);
+      };
+    }
   }, [popupMessage]);
 
   return (
     <div className={PokemonCardCss.container}>
+      <div>{index}</div>
       <Link
         className={PokemonCardCss.clickable_container}
         to={{

@@ -47,7 +47,7 @@
 }
 
 .hide_popup_message {
-  top: -50px;
+  top: -60px;
   visibility: hidden;
   transition: 300ms;
 }

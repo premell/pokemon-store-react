@@ -88,6 +88,7 @@ const PokemonDetails = () => {
 
   const [popupMessage, setPopupMessage] = useRecoilState(popupMessageAtoms);
   const [currentImage, setCurrentImage] = useState("");
+  console.log(id);
 
   useEffect(() => {
     setPopupMessage((popupMessage) => ({ ...popupMessage, show: false }));
@@ -95,12 +96,14 @@ const PokemonDetails = () => {
   useEffect(() => {
     const getPokemonDetails = async () => {
       setIsLoading(true);
+      console.log(id);
       imageListDefault.splice(0, imageListDefault.length);
       const res = await fetch(`${BASE_URL}${id}`);
       pokemonDetails = await res.json();
+      console.log(pokemonDetails.order);
 
       const res2 = await fetch(
-        `https://pokeapi.co/api/v2/pokemon-species/${id}`
+        `https://pokeapi.co/api/v2/pokemon-species/${pokemonDetails.id}`
       );
       const data = await res2.json();
       for (const entry of data.flavor_text_entries) {

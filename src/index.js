@@ -4,6 +4,8 @@ import Home from "./pages/Home/Home";
 import Cart from "./pages/Cart/Cart";
 import PokemonDetails from "./pages/PokemonDetails/PokemonDetails";
 
+import "./index.css";
+
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import { RecoilRoot } from "recoil";

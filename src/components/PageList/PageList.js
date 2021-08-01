@@ -2,11 +2,11 @@ import "./PageList.css";
 
 import { IconContext } from "react-icons";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useCallback, useEffect, useState } from "react";
 
 import Number from "./Number";
 
 const setRange = (currentPage, maxPages) => {
-  console.log(maxPages);
   const range = [];
   if (currentPage <= 6) {
     for (let i = 1; i <= 10; i++) {
@@ -29,7 +29,6 @@ const PageList = ({
   pokemonsPerPage,
   numberOfPokemon,
 }) => {
-  console.log(isLastPage);
   const range = setRange(
     currentPage,
     Math.ceil(numberOfPokemon / pokemonsPerPage)
@@ -49,6 +48,7 @@ const PageList = ({
         <div className="page_container_page_list">
           {range.map((number) => (
             <Number
+              key={number}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               number={number}

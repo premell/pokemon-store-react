@@ -1,0 +1,24 @@
+.main_container_footer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  background-color: #111111;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  height: 200px;
+  width: 100%;
+  color: white;
+  padding-top: 30px;
+}
+
+.main_text_footer {
+  margin-bottom: 10px;
+  font-size: 25px;
+  font-weight: 501;
+}
+
+.bread_footer {
+  margin-bottom: 10px;
+  color: #6f6f6f;
+}
