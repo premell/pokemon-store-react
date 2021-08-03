@@ -4,7 +4,7 @@ import PokemonListCss from "./PokemonList.module.css";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { searchValue as searchValueAtoms } from "../../atoms";
 import { useRecoilState } from "recoil";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import flattenObject from "../../utils/flattenObject";
 
@@ -36,6 +36,9 @@ const areArraysEqual = (array1, array2) => {
   let areEqual = true;
   array1.forEach((item) => {
     if (!array2.includes(item)) areEqual = false;
+  });
+  array2.forEach((item) => {
+    if (!array1.includes(item)) areEqual = false;
   });
   return areEqual;
 };
@@ -97,7 +100,6 @@ const PokemonList = ({
   currentPage,
   sortingMethod,
   setCurrentPage,
-  setTypeFilters,
 }) => {
   const [typeFilteredPokemon, setTypeFilteredPokemon] = useState({
     pokemon: [],
@@ -196,13 +198,17 @@ const PokemonList = ({
     );
 
     if (!areArraysEqual(typeFilteredPokemon.currentTypeFilters, typeFilters)) {
-      console.log("AAAAH SOMETHING WENT WRONG");
-      setTypeFilters(typeFilters);
+      setTypeFilteredPokemon({ ...typeFilteredPokemon });
+      return;
+    }
+    //If the filters didnt change anything, do nothing
+    if (allFilteredPokemons.length === filteredPokemonsBySearchQuery.length) {
+      setIsLoading(false);
       return;
     }
     setAllFilteredPokemons(filteredPokemonsBySearchQuery);
     updateNumberOfMatchedPokemon(filteredPokemonsBySearchQuery.length);
-  }, [typeFilteredPokemon, priceFilters, searchValue]);
+  }, [typeFilteredPokemon, priceFilters, searchValue, allFilteredPokemons]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -229,7 +235,6 @@ const PokemonList = ({
         break;
       default:
     }
-    setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
 
   // display pokemon

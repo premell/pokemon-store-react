@@ -11,6 +11,7 @@ import MultiRangeSliderCss from "./MultiRangeSlider.module.css";
 const MultiRangeSlider = ({ min, max, onChange, currentPriceFilter }) => {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
+  const [localMaxVal, setLocalMaxVal] = useState(max);
   const minValRef = useRef(min);
   const maxValRef = useRef(max);
   const range = useRef(null);
@@ -26,30 +27,33 @@ const MultiRangeSlider = ({ min, max, onChange, currentPriceFilter }) => {
   // Set width of the range to decrease from the left side
   useEffect(() => {
     const minPercent = getPercent(minVal);
-    const maxPercent = getPercent(maxValRef.current);
+    const maxPercent = getPercent(maxVal);
+    //const maxPercent = getPercent(maxValRef.current);
 
     if (range.current) {
       range.current.style.left = `${minPercent}%`;
       range.current.style.width = `${maxPercent - minPercent}%`;
     }
-  }, [minVal, getPercent]);
+  }, [minVal, maxVal, getPercent]);
 
   // Set width of the range to decrease from the right side
-  useEffect(() => {
-    const minPercent = getPercent(minValRef.current);
-    const maxPercent = getPercent(maxVal);
-
-    if (range.current) {
-      range.current.style.width = `${maxPercent - minPercent}%`;
-    }
-  }, [maxVal, getPercent]);
+  // useEffect(() => {
+  //   const minPercent = getPercent(minValRef.current);
+  //   const maxPercent = getPercent(maxVal);
+  //   console.log("MIN ", minPercent);
+  //   console.log("minVal ", minVal);
+  //   if (range.current) {
+  //     range.current.style.width = `${maxPercent - minPercent}%`;
+  //   }
+  // }, [minVal, maxVal, getPercent]);
 
   // Get min and max values when their state changes
 
   const stringToInteger = (string) => {
     const removeLetters = string.replace(/[^0-9]/g, "");
-    const removeFirstZero = removeLetters.replace(/^0/, "");
-    return removeFirstZero;
+    const removeFirstZero = removeLetters.replace(/^0(.+)/, "$1");
+    if (removeFirstZero === "") return 0;
+    return parseInt(removeFirstZero);
   };
   const handleMouseUp = (minVal, maxVal) => {
     onChange({ min: minVal, max: maxVal });
@@ -69,14 +73,30 @@ const MultiRangeSlider = ({ min, max, onChange, currentPriceFilter }) => {
 
   const handleMaxChange = (e) => {
     if (e.target.value === "") {
-      setMaxVal(0);
+      setLocalMaxVal(0);
     } else {
       const number = stringToInteger(e.target.value);
+
       const upperBoundNumber = number >= max ? max : number;
-      const lowerBoundNumber =
-        upperBoundNumber <= minVal ? minVal + 1 : upperBoundNumber;
-      setMaxVal(parseInt(lowerBoundNumber));
+      // const lowerBoundNumber =
+      //   upperBoundNumber <= minVal ? minVal + 1 : upperBoundNumber;
+      setLocalMaxVal(parseInt(upperBoundNumber));
     }
+  };
+
+  useEffect(() => {
+    if (localMaxVal >= minVal && localMaxVal <= max && localMaxVal !== maxVal) {
+      setMaxVal(localMaxVal);
+    }
+  }, [localMaxVal, minVal, maxVal]);
+  useEffect(() => {
+    if (maxVal === max) setLocalMaxVal(maxVal);
+  }, [maxVal]);
+
+  const setAcceptedMaxValue = (localMaxVal, maxVal, minVal) => {
+    if (localMaxVal <= minVal) setMaxVal(minVal + 1);
+    else if (localMaxVal > max) setMaxVal(max);
+    else setMaxVal(localMaxVal);
   };
 
   useEffect(() => {
@@ -120,6 +140,7 @@ const MultiRangeSlider = ({ min, max, onChange, currentPriceFilter }) => {
           onMouseUp={() => handleMouseUp(minVal, maxVal)}
           onChange={(event) => {
             const value = Math.max(Number(event.target.value), minVal + 1);
+            setLocalMaxVal(value);
             setMaxVal(value);
             maxValRef.current = value;
           }}
@@ -137,11 +158,18 @@ const MultiRangeSlider = ({ min, max, onChange, currentPriceFilter }) => {
           onChange={handleMinChange}
           value={minVal}
         />
-        <p style={{ display: "inline-block" }}>-</p>
+        <p
+          style={{
+            display: "inline-block",
+          }}
+        >
+          -
+        </p>
         <input
+          onBlur={() => setAcceptedMaxValue(localMaxVal, maxVal, minVal)}
           className={MultiRangeSliderCss.text_input}
           onChange={handleMaxChange}
-          value={maxVal}
+          value={localMaxVal}
         />
       </div>
     </div>
