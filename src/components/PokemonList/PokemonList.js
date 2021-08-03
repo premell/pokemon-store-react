@@ -149,10 +149,6 @@ const PokemonList = ({
     [storedPokemonNames, storedPokemons]
   );
 
-  // useEffect(() => {
-  //   console.log("RENDERED");
-  // });
-
   useEffect(() => {
     const filterPokemonBasedOnType = async () => {
       setIsLoading(true);
@@ -174,6 +170,11 @@ const PokemonList = ({
           index: getIndexFromUrl(pokemon.url),
         };
       });
+      if (typeFilteredPokemon.length === 0) {
+        setPokemonsToDisplay([]);
+        setIsLoading(false);
+        return;
+      }
       setTypeFilteredPokemon({
         pokemon: typeFilteredPokemon,
         currentTypeFilters: typeFilters,
@@ -201,14 +202,9 @@ const PokemonList = ({
       setTypeFilteredPokemon({ ...typeFilteredPokemon });
       return;
     }
-    //If the filters didnt change anything, do nothing
-    if (allFilteredPokemons.length === filteredPokemonsBySearchQuery.length) {
-      setIsLoading(false);
-      return;
-    }
     setAllFilteredPokemons(filteredPokemonsBySearchQuery);
     updateNumberOfMatchedPokemon(filteredPokemonsBySearchQuery.length);
-  }, [typeFilteredPokemon, priceFilters, searchValue, allFilteredPokemons]);
+  }, [typeFilteredPokemon, priceFilters, searchValue]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -235,11 +231,11 @@ const PokemonList = ({
         break;
       default:
     }
+    setAllSortedPokemons(sortedPokemon);
   }, [allFilteredPokemons, sortingMethod]);
 
   // display pokemon
   useEffect(() => {
-    setIsLoading(true);
     const displayPokemon = async () => {
       const startPokemon = (currentPage - 1) * pokemonsPerPage;
       const endPokemon = currentPage * pokemonsPerPage;
@@ -247,9 +243,17 @@ const PokemonList = ({
         startPokemon,
         endPokemon
       );
+      console.log(pokemonToDisplay);
+      if (pokemonToDisplay.length === 0) {
+        setPokemonsToDisplay([]);
+        setIsLoading(false);
+        return;
+      }
+
       setNumberOfSkeletons(pokemonToDisplay.length);
       setPokemonObjectsToDisplay(pokemonToDisplay);
     };
+    setIsLoading(true);
     displayPokemon();
   }, [allSortedPokemons, pokemonsPerPage, currentPage]);
 
@@ -269,7 +273,7 @@ const PokemonList = ({
     setSkeletons(localSkeletons);
   };
 
-  if (pokemonToDisplay.length === 0) {
+  if (pokemonToDisplay.length === 0 && isLoading === false) {
     return (
       <div className={PokemonListCss.no_pokemons}>No Pokemon were found</div>
     );
