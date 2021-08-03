@@ -20,23 +20,7 @@ const TypeFilterList = ({ handleClick, typeFilters }) => {
             className={TypeFilterListCss.test_check_box}
             checked={typeFilters?.includes(type)}
           />
-          <p>{type}</p>
-        </div>
-      ))}
-    </div>
-  );
-  return (
-    <div>
-      {typeList.map((type) => (
-        <div class={TypeFilterListCss.flair_container}>
-          <input
-            type="checkbox"
-            onChange={handleClick}
-            id={type}
-            class={TypeFilterListCss.check_box}
-            checked={typeFilters?.includes(type)}
-          />
-          <TypeFlair type={type} />
+          <p className={TypeFilterListCss.side_type}>{type}</p>
         </div>
       ))}
     </div>

@@ -16,7 +16,9 @@ const Navbar = () => {
   return (
     <div className={NavbarCss.main_container}>
       <Link to="/">
-        <h3>Pokemon Trader</h3>
+        <div className={NavbarCss.title_container}>
+          <p className={NavbarCss.title}>Pokemon Trader</p>
+        </div>
       </Link>
       <SearchBar />
       <Link to="/Cart">

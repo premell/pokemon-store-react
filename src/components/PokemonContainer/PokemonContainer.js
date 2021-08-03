@@ -48,6 +48,7 @@ const PokemonContainer = ({
       />
       <PokemonList
         pokemonsPerPage={pokemonsPerPage}
+        setTypeFilters={setTypeFilters}
         currentPage={currentPage}
         sortingMethod={sortingMethod}
         setSortingMethod={setSortingMethod}

@@ -32,6 +32,14 @@ const SORTING_METHODS = {
   RELEASE_DATE_NEWEST_FIRST: "RELEASE_DATE_NEWEST_FIRST",
 };
 
+const areArraysEqual = (array1, array2) => {
+  let areEqual = true;
+  array1.forEach((item) => {
+    if (!array2.includes(item)) areEqual = false;
+  });
+  return areEqual;
+};
+
 const characterValues = {
   a: "1",
   b: "2",
@@ -89,8 +97,12 @@ const PokemonList = ({
   currentPage,
   sortingMethod,
   setCurrentPage,
+  setTypeFilters,
 }) => {
-  const [typeFilteredPokemon, setTypeFilteredPokemon] = useState([]);
+  const [typeFilteredPokemon, setTypeFilteredPokemon] = useState({
+    pokemon: [],
+    currentTypeFilters: [],
+  });
   const [allFilteredPokemons, setAllFilteredPokemons] = useState([]);
   const [allSortedPokemons, setAllSortedPokemons] = useState([]);
   const [pokemonToDisplay, setPokemonsToDisplay] = useState([]);
@@ -160,7 +172,10 @@ const PokemonList = ({
           index: getIndexFromUrl(pokemon.url),
         };
       });
-      setTypeFilteredPokemon(typeFilteredPokemon);
+      setTypeFilteredPokemon({
+        pokemon: typeFilteredPokemon,
+        currentTypeFilters: typeFilters,
+      });
       setIsLoading(false);
     };
     filterPokemonBasedOnType();
@@ -168,7 +183,7 @@ const PokemonList = ({
 
   useEffect(() => {
     setIsLoading(true);
-    const filteredPokemons = [...typeFilteredPokemon];
+    const filteredPokemons = [...typeFilteredPokemon.pokemon];
 
     const filteredPokemonsByMinPrice = filteredPokemons.filter(
       (pokemon) => pokemon.price >= priceFilters.min
@@ -180,6 +195,11 @@ const PokemonList = ({
       (pokemon) => pokemon.name.includes(searchValue)
     );
 
+    if (!areArraysEqual(typeFilteredPokemon.currentTypeFilters, typeFilters)) {
+      console.log("AAAAH SOMETHING WENT WRONG");
+      setTypeFilters(typeFilters);
+      return;
+    }
     setAllFilteredPokemons(filteredPokemonsBySearchQuery);
     updateNumberOfMatchedPokemon(filteredPokemonsBySearchQuery.length);
   }, [typeFilteredPokemon, priceFilters, searchValue]);
@@ -218,8 +238,6 @@ const PokemonList = ({
     const displayPokemon = async () => {
       const startPokemon = (currentPage - 1) * pokemonsPerPage;
       const endPokemon = currentPage * pokemonsPerPage;
-      // if (endPokemon >= allSortedPokemons.length) setIsLastPage(true);
-      // else setIsLastPage(false);
       const pokemonToDisplay = [...allSortedPokemons].slice(
         startPokemon,
         endPokemon
@@ -237,10 +255,6 @@ const PokemonList = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentPage, pokemonToDisplay]);
-
-  useEffect(() => {
-    console.log(typeFilters);
-  }, [typeFilters]);
 
   const setNumberOfSkeletons = (number) => {
     const localSkeletons = [];

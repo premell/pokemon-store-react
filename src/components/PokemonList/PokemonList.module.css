@@ -5,6 +5,7 @@
   height: 100%;
   flex: 5;
   margin: 10px;
+  min-height: 800px;
 }
 
 @media (max-width: 500px) {
@@ -28,7 +29,7 @@
 }
 
 .no_pokemons {
-  height: 365px;
+  min-height: 800px;
   display: flex;
   justify-content: center;
   padding-top: 10%;

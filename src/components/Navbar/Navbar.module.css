@@ -42,12 +42,21 @@
   border-color: #a7acb5;
 }
 
-h3 {
+.title {
   flex: 1;
   margin-right: 24px;
   max-width: 200px;
 
   font-size: 20px;
+  font-weight: 601;
+
+  color: black;
+  text-decoration: none !important;
+  text-align: center;
+}
+
+.title_container {
+  display: inline-block;
 }
 
 .cart_container {

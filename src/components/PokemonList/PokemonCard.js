@@ -66,7 +66,9 @@ const PokemonCard = ({ pokemon }) => {
         }}
       >
         <img src={image} />
-        <span className={PokemonCardCss.name}> {name}</span>
+        <div className={PokemonCardCss.name}>
+          <p className={PokemonCardCss.name}>{pokemon.name}</p>
+        </div>
         <div>
           {types.map((type) => (
             <TypeFlair key={type.type.name} type={type.type.name} />

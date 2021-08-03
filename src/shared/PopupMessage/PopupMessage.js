@@ -1,6 +1,5 @@
 import "./PopupMessage.css";
 
-import clsx from "clsx";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
 const PopupMessage = ({ show, message, type }) => {
@@ -14,7 +13,9 @@ const PopupMessage = ({ show, message, type }) => {
         <div className="main_message_popup_message">{message}</div>
         <div className="go_to_cart_popup_message">
           <Link to="/cart">
-            <p>to cart</p>
+            <div className="go_to_cart_inner_popup_message">
+              <p className="cart_message_popup_message">to cart</p>
+            </div>
           </Link>
         </div>
       </div>
