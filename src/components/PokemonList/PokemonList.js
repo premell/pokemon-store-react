@@ -81,14 +81,6 @@ const getPokemonPrice = (name) => {
   return name.length * 5 * characterValues[name[3]];
 };
 
-const pokemonExists = (pokemonName, allPokemons) => {
-  const findPokemon = allPokemons.find(
-    (pokemon) => pokemon.name === pokemonName
-  );
-  const doesExist = findPokemon === undefined ? false : true;
-  return doesExist;
-};
-
 const storedPokemons = [];
 const storedPokemonNames = [];
 
@@ -120,6 +112,8 @@ const PokemonList = ({
   const setPokemonObjectsToDisplay = useCallback(
     (refrencePokemons) => {
       const pokemonObjects = [];
+      console.time("answer time");
+
       Promise.all(
         refrencePokemons.map(async (pokemon, index) => {
           const pokemonName = pokemon.name;
@@ -143,6 +137,7 @@ const PokemonList = ({
         })
       ).then(() => {
         setPokemonsToDisplay(pokemonObjects);
+        console.timeEnd("answer time");
         setIsLoading(false);
       });
     },
@@ -282,11 +277,11 @@ const PokemonList = ({
       <div className={PokemonListCss.main_container_pokemon_list}>
         {isLoading
           ? skeletons.map((skeleton) => (
-              <div className={PokemonListCss.skeleton_container}></div>
-            ))
+            <div className={PokemonListCss.skeleton_container}></div>
+          ))
           : pokemonToDisplay.map((pokemon) => (
-              <PokemonCard key={pokemon.name} pokemon={pokemon} />
-            ))}
+            <PokemonCard key={pokemon.name} pokemon={pokemon} />
+          ))}
       </div>
     );
   }

@@ -1,7 +1,10 @@
 import { SliderCss } from "./Slider.module.css";
 
 const Slider = () => {
-  <div class="container">
+
+
+
+  < div class="container" >
     <div class="switches-container">
       <input
         type="radio"
@@ -23,7 +26,7 @@ const Slider = () => {
     <p>
       <small>NB: Input radios are used toggle the switch state.</small>
     </p>
-  </div>;
+  </div >;
 };
 
 export default Slider;
